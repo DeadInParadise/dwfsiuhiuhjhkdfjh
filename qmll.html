@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#121212">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>My IISc Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08090f;--surf:#0e0f1a;--card:#13141f;--card2:#191a28;
+  --border:#22233a;--border2:#2e2f4a;
+  --acc:#6c47ff;--acc2:#00d4ff;
+  --green:#2ecc71;--gold:#ffc93c;--red:#ff5c5c;--orange:#ff8c42;
+  --text:#e8e8f2;--sub:#8888b0;--muted:#50506a;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden;}
+
+/* ── APP ── */
+.app{display:flex;min-height:100vh;flex-direction:column;}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--surf);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.topbar-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;flex:1;}
+.topbar-logo span{color:var(--acc);}
+.topbar-actions{display:flex;gap:8px;}
+.icon-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--sub);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.icon-btn:hover{border-color:var(--acc);color:var(--text);}
+#importFile{display:none;}
+
+/* ── NAV ── */
+.nav-scroll{overflow-x:auto;display:flex;gap:6px;padding:10px 16px;background:var(--surf);border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.nav-scroll::-webkit-scrollbar{display:none;}
+.nav-pill{flex-shrink:0;padding:7px 13px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--sub);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;white-space:nowrap;transition:all .2s;letter-spacing:.5px;}
+.nav-pill:hover{border-color:var(--border2);color:var(--text);}
+.nav-pill.active{background:var(--acc);border-color:var(--acc);color:#fff;}
+.nav-pill.special{border-color:var(--gold);color:var(--gold);}
+.nav-pill.special.active{background:var(--gold);color:#000;}
+
+/* ── MAIN ── */
+.main{flex:1;padding:20px 16px 50px;}
+.panel{display:none;}
+.panel.active{display:block;animation:fadeUp .3s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── PAGE HEADER ── */
+.page-hdr{margin-bottom:22px;}
+.page-hdr .crumb{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
+.page-hdr h1{font-family:'Syne',sans-serif;font-size:25px;font-weight:800;line-height:1.1;margin-bottom:3px;}
+.page-hdr .sub{color:var(--sub);font-size:13px;}
+
+/* ── PROGRESS BAR ── */
+.prog-wrap{margin-bottom:22px;}
+.prog-meta{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:5px;}
+.prog-meta .pct{color:var(--green);}
+.prog-bar{height:5px;background:var(--border2);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:3px;margin-bottom:20px;background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:4px;}
+.tab-btn{flex:1;padding:8px 4px;border:none;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:500;cursor:pointer;border-radius:7px;transition:all .2s;white-space:nowrap;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{background:var(--acc);color:#fff;}
+
+/* ── CHECKLIST ── */
+.cl-section{margin-bottom:22px;}
+.cl-sec-title{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.cl-sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.check-item{display:flex;align-items:center;gap:12px;padding:12px 13px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:7px;cursor:pointer;transition:all .2s;user-select:none;}
+.check-item:active{transform:scale(.98);}
+.check-item:hover{border-color:var(--border2);}
+.check-item.done{border-color:rgba(46,204,113,.25);background:rgba(46,204,113,.04);}
+.check-item.done .check-label{color:var(--muted);text-decoration:line-through;}
+.checkbox{width:22px;height:22px;border-radius:6px;border:2px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.check-item.done .checkbox{background:var(--green);border-color:var(--green);}
+.check-tick{display:none;color:#fff;font-size:12px;}
+.check-item.done .check-tick{display:block;}
+.check-label{font-size:13.5px;flex:1;}
+.p-badge{font-family:'Space Mono',monospace;font-size:8px;padding:2px 6px;border-radius:3px;flex-shrink:0;}
+.p-must{background:rgba(255,92,92,.15);color:var(--red);border:1px solid rgba(255,92,92,.3);}
+.p-imp{background:rgba(108,71,255,.15);color:#9b7fff;border:1px solid rgba(108,71,255,.3);}
+.p-nice{background:rgba(46,204,113,.12);color:var(--green);border:1px solid rgba(46,204,113,.25);}
+
+/* ── SYLLABUS DROPDOWNS ── */
+.syl-group{margin-bottom:9px;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.syl-group-head{display:flex;align-items:center;gap:12px;padding:13px 15px;background:var(--card);cursor:pointer;user-select:none;transition:background .2s;}
+.syl-group-head:hover{background:var(--card2);}
+.syl-group-icon{font-size:18px;flex-shrink:0;}
+.syl-group-info{flex:1;}
+.syl-group-info h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
+.syl-group-info p{font-size:11px;color:var(--muted);}
+.syl-arrow{color:var(--muted);font-size:11px;transition:transform .3s;flex-shrink:0;}
+.syl-group.open .syl-arrow{transform:rotate(180deg);}
+.syl-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1);}
+.syl-group.open .syl-body{max-height:2000px;}
+.syl-body-inner{background:var(--card);border-top:1px solid var(--border);padding:13px 15px;}
+.syl-topics{list-style:none;}
+.syl-topics li{padding:6px 0;font-size:13px;color:#c0c0d8;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:flex-start;gap:8px;}
+.syl-topics li:last-child{border-bottom:none;}
+.syl-topics li::before{content:'›';color:var(--acc2);font-weight:bold;flex-shrink:0;margin-top:1px;}
+.syl-header-li{color:var(--acc2)!important;font-family:'Space Mono',monospace;font-size:10px!important;letter-spacing:1px;}
+.syl-header-li::before{display:none!important;}
+.book-ref{margin-top:11px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--border);padding:8px 10px;border-radius:6px;line-height:1.7;}
+
+/* ── PROJECTS ── */
+.proj-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:17px;margin-bottom:13px;transition:border-color .2s;}
+.proj-card:hover{border-color:var(--acc);}
+.proj-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;}
+.proj-icon{font-size:22px;flex-shrink:0;}
+.proj-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;flex:1;}
+.proj-diff{font-family:'Space Mono',monospace;font-size:9px;padding:3px 8px;border-radius:3px;margin-top:2px;flex-shrink:0;}
+.d-easy{background:rgba(46,204,113,.12);color:var(--green);border:1px solid rgba(46,204,113,.25);}
+.d-med{background:rgba(255,201,60,.12);color:var(--gold);border:1px solid rgba(255,201,60,.25);}
+.d-hard{background:rgba(255,92,92,.12);color:var(--red);border:1px solid rgba(255,92,92,.25);}
+.proj-desc{font-size:13px;color:var(--sub);margin-bottom:11px;}
+.tech-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px;}
+.tech-pill{font-family:'Space Mono',monospace;font-size:10px;padding:3px 8px;background:rgba(108,71,255,.1);border:1px solid rgba(108,71,255,.2);border-radius:3px;color:#9b7fff;}
+.proj-why{font-size:12px;color:var(--muted);font-style:italic;}
+
+/* ── TIMELINE ── */
+.timeline-wrap{position:relative;padding-left:20px;}
+.timeline-wrap::before{content:'';position:absolute;left:5px;top:8px;bottom:0;width:2px;background:linear-gradient(to bottom,var(--acc),var(--acc2),var(--green));border-radius:1px;opacity:.4;}
+.tl-item{position:relative;margin-bottom:0;padding-bottom:0;}
+.tl-node{display:flex;align-items:flex-start;gap:14px;margin-bottom:4px;}
+.tl-dot-col{display:flex;flex-direction:column;align-items:center;position:relative;left:-20px;flex-shrink:0;width:12px;}
+.tl-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--acc);background:var(--bg);flex-shrink:0;margin-top:4px;transition:all .2s;z-index:1;}
+.tl-item:hover .tl-dot{background:var(--acc);box-shadow:0 0 8px var(--acc);}
+.tl-card{flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 14px;margin-bottom:10px;cursor:pointer;transition:border-color .2s;margin-left:-12px;}
+.tl-card:hover{border-color:var(--acc);}
+.tl-card.open{border-color:var(--acc);background:rgba(108,71,255,.05);}
+.tl-card-head{display:flex;align-items:center;gap:10px;}
+.tl-week-tag{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);background:var(--border2);padding:2px 7px;border-radius:3px;flex-shrink:0;}
+.tl-card-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;flex:1;}
+.tl-card-arrow{color:var(--muted);font-size:10px;transition:transform .3s;flex-shrink:0;}
+.tl-card.open .tl-card-arrow{transform:rotate(180deg);}
+.tl-card-body{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1);}
+.tl-card.open .tl-card-body{max-height:600px;}
+.tl-card-inner{padding-top:10px;border-top:1px solid var(--border);margin-top:10px;}
+.tl-card-inner ul{list-style:none;}
+.tl-card-inner ul li{font-size:12.5px;color:var(--sub);padding:4px 0;display:flex;gap:8px;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.03);}
+.tl-card-inner ul li:last-child{border-bottom:none;}
+.tl-card-inner ul li::before{content:'·';color:var(--acc2);flex-shrink:0;font-size:16px;line-height:1;}
+
+/* ── HACKATHON ── */
+.hack-week-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:10px;}
+.hack-week-head{display:flex;align-items:center;gap:10px;padding:13px 15px;cursor:pointer;transition:background .2s;}
+.hack-week-head:hover{background:var(--card2);}
+.hack-week-card.open .hack-week-head{background:rgba(46,204,113,.06);border-bottom:1px solid var(--border);}
+.hack-week-num{font-family:'Space Mono',monospace;font-size:9px;color:var(--green);border:1px solid rgba(46,204,113,.3);padding:3px 8px;border-radius:10px;flex-shrink:0;}
+.hack-week-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;flex:1;}
+.hack-week-arrow{color:var(--muted);font-size:10px;transition:transform .3s;}
+.hack-week-card.open .hack-week-arrow{transform:rotate(180deg);}
+.hack-week-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1);}
+.hack-week-card.open .hack-week-body{max-height:1000px;}
+.hack-week-inner{padding:13px 15px;}
+
+/* ── BOOKS — FOLDER STYLE ── */
+.books-folders{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.book-folder{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.book-folder-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .2s;user-select:none;}
+.book-folder-head:hover{background:var(--card2);}
+.book-folder.open .book-folder-head{background:rgba(108,71,255,.07);border-bottom:1px solid var(--border);}
+.book-folder-icon{font-size:22px;flex-shrink:0;}
+.book-folder-info{flex:1;}
+.book-folder-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
+.book-folder-count{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:1px;}
+.book-folder-arrow{color:var(--muted);font-size:11px;transition:transform .3s;flex-shrink:0;}
+.book-folder.open .book-folder-arrow{transform:rotate(180deg);}
+.book-folder-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1);}
+.book-folder.open .book-folder-body{max-height:1000px;}
+.book-folder-inner{padding:10px 12px 14px;}
+.book-row{display:flex;align-items:center;gap:10px;padding:10px 10px;background:var(--card2);border:1px solid var(--border);border-radius:8px;margin-bottom:7px;transition:border-color .2s;}
+.book-row:hover{border-color:var(--border2);}
+.book-row:last-child{margin-bottom:0;}
+.book-open-btn{background:none;border:1px solid rgba(0,212,255,.3);border-radius:7px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--acc2);font-size:18px;cursor:pointer;flex-shrink:0;transition:all .2s;}
+.book-open-btn:hover{background:rgba(0,212,255,.1);border-color:var(--acc2);}
+.book-row-info{flex:1;min-width:0;}
+.book-row-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.book-row-folder{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-top:1px;}
+.book-del{background:none;border:none;color:var(--muted);font-size:15px;cursor:pointer;padding:4px;transition:color .2s;flex-shrink:0;}
+.book-del:hover{color:var(--red);}
+.book-empty-folder{text-align:center;padding:16px;color:var(--muted);font-size:12px;}
+/* Add book button at bottom */
+.add-book-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;background:var(--card);border:1px dashed var(--border2);border-radius:12px;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--muted);}
+.add-book-btn:hover{border-color:var(--acc);color:var(--acc);background:rgba(108,71,255,.06);}
+.add-book-btn .add-icon{font-size:22px;}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--surf);border:1px solid var(--border);border-radius:16px 16px 0 0;padding:24px 20px;width:100%;max-width:480px;animation:slideUp .3s ease;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.modal-title span{color:var(--acc2);}
+.form-input{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;width:100%;transition:border-color .2s;margin-bottom:10px;display:block;}
+.form-input:focus{outline:none;border-color:var(--acc);}
+.form-input::placeholder{color:var(--muted);}
+.form-select{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;width:100%;margin-bottom:14px;display:block;}
+.modal-btns{display:flex;gap:8px;}
+.btn-cancel{flex:1;padding:12px;background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-family:'Syne',sans-serif;font-size:13px;cursor:pointer;}
+.btn-save{flex:2;padding:12px;background:var(--acc);border:none;border-radius:8px;color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s;}
+.btn-save:hover{opacity:.85;}
+
+/* ── OVERVIEW ICONS GRID ── */
+.ov-total-prog{margin-bottom:28px;}
+.ov-total-prog .prog-meta{font-size:12px;}
+.ov-total-prog .prog-bar{height:8px;border-radius:4px;}
+.ov-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:0;}
+.ov-icon-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 10px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:all .2s;user-select:none;}
+.ov-icon-card:hover{border-color:var(--acc);background:rgba(108,71,255,.07);transform:translateY(-2px);}
+.ov-icon-card:active{transform:scale(.96);}
+.ov-icon{font-size:28px;line-height:1;}
+.ov-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-align:center;color:var(--sub);}
+.ov-mini-prog{width:100%;height:3px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:2px;}
+.ov-mini-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .5s;}
+.ov-pct{font-family:'Space Mono',monospace;font-size:9px;color:var(--green);}
+
+/* ── CHECKPOINT ── */
+.checkpoint{background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.3);border-radius:10px;padding:13px 15px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start;}
+.checkpoint-icon{font-size:18px;flex-shrink:0;}
+.checkpoint-text{font-size:13px;color:#a8e6c0;}
+.checkpoint-text strong{color:var(--green);font-family:'Syne',sans-serif;display:block;margin-bottom:1px;}
+
+/* ── FULL SYLLABUS INTRO ── */
+.full-syl-intro{background:linear-gradient(135deg,rgba(108,71,255,.1),rgba(0,212,255,.06));border:1px solid var(--acc);border-radius:10px;padding:13px;margin-bottom:18px;font-size:13px;color:var(--sub);}
+.full-syl-intro strong{color:var(--acc2);display:block;margin-bottom:3px;font-family:'Syne',sans-serif;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-logo">IISc <span>Roadmap</span></div>
+  <div class="topbar-actions">
+    <button class="icon-btn" onclick="exportData()">💾 Save</button>
+    <button class="icon-btn" onclick="document.getElementById('importFile').click()">📂 Load</button>
+    <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+  </div>
+</div>
+
+<!-- NAV PILLS -->
+<div class="nav-scroll">
+  <button class="nav-pill active" onclick="showPage('overview')" id="pill-overview">Overview</button>
+  <button class="nav-pill" onclick="showPage('sem2')" id="pill-sem2">Sem 2</button>
+  <button class="nav-pill" onclick="showPage('summer')" id="pill-summer">Summer</button>
+  <button class="nav-pill" onclick="showPage('sem3')" id="pill-sem3">Sem 3</button>
+  <button class="nav-pill" onclick="showPage('winter')" id="pill-winter">Winter</button>
+  <button class="nav-pill" onclick="showPage('sem4')" id="pill-sem4">Sem 4</button>
+  <button class="nav-pill" onclick="showPage('projects')" id="pill-projects">Projects</button>
+  <button class="nav-pill special" onclick="showPage('hackathon')" id="pill-hackathon">Hackathon</button>
+  <button class="nav-pill special" onclick="showPage('fullsyl')" id="pill-fullsyl">Full Syllabus</button>
+  <button class="nav-pill special" onclick="showPage('books')" id="pill-books">📚 Books</button>
+</div>
+
+<!-- ADD BOOK MODAL -->
+<div class="modal-overlay" id="bookModal" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-title">📖 Add a <span>Book</span></div>
+    <input class="form-input" id="bookName" placeholder="Book title (e.g. Nielsen & Chuang)" />
+    <input class="form-input" id="bookUrl" placeholder="Link (PDF / website / Drive)" />
+    <select class="form-select" id="bookFolder">
+      <option value="Mathematics">📐 Mathematics</option>
+      <option value="Machine Learning">🤖 Machine Learning</option>
+      <option value="Quantum Computing">⚛️ Quantum Computing</option>
+      <option value="Programming">🐍 Programming</option>
+    </select>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="addBook()">Add Book</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ══ OVERVIEW ══ -->
+  <div class="panel active" id="page-overview">
+    <div class="page-hdr">
+      <div class="crumb">// Dashboard</div>
+      <h1>My IISc Roadmap</h1>
+      <div class="sub">Tap any section to jump in</div>
+    </div>
+    <!-- Total Progress Bar -->
+    <div class="ov-total-prog prog-wrap">
+      <div class="prog-meta">
+        <span>Total Progress</span>
+        <span class="pct" id="ov-total-text">0 / 0 tasks · 0%</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="ov-total-fill" style="width:0%"></div></div>
+    </div>
+    <!-- Icon Grid -->
+    <div class="ov-grid" id="ov-grid"></div>
+  </div>
+
+  <!-- ══ SEM 2 ══ -->
+  <div class="panel" id="page-sem2">
+    <div class="page-hdr"><div class="crumb">// Semester 2</div><h1>Foundations</h1><div class="sub">Math + Python + ML Basics · 16 Weeks</div></div>
+    <div class="prog-wrap"><div class="prog-meta"><span>Progress</span><span class="pct" id="prog-sem2-text">0/0</span></div><div class="prog-bar"><div class="prog-fill" id="prog-sem2" style="width:0%"></div></div></div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('sem2','checklist')">✅ Checklist</button>
+      <button class="tab-btn" onclick="switchTab('sem2','syllabus')">📖 Syllabus</button>
+      <button class="tab-btn" onclick="switchTab('sem2','timeline')">⏱ Timeline</button>
+    </div>
+    <div id="sem2-checklist" class="tab-panel"><div id="sem2-cl-content"></div><div class="checkpoint"><span class="checkpoint-icon">📌</span><div class="checkpoint-text"><strong>End of Sem 2 Checkpoint</strong>Linear algebra · ML basics · Python confidence</div></div></div>
+    <div id="sem2-syllabus" class="tab-panel" style="display:none"></div>
+    <div id="sem2-timeline" class="tab-panel" style="display:none"></div>
+  </div>
+
+  <!-- ══ SUMMER ══ -->
+  <div class="panel" id="page-summer">
+    <div class="page-hdr"><div class="crumb">// Summer Break</div><h1>ML Mastery Sprint</h1><div class="sub">After Sem 2 · Weeks 17–24 · 4–6 hrs/day</div></div>
+    <div class="prog-wrap"><div class="prog-meta"><span>Progress</span><span class="pct" id="prog-summer-text">0/0</span></div><div class="prog-bar"><div class="prog-fill" id="prog-summer" style="width:0%"></div></div></div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('summer','checklist')">✅ Checklist</button>
+      <button class="tab-btn" onclick="switchTab('summer','timeline')">⏱ Timeline</button>
+    </div>
+    <div id="summer-checklist" class="tab-panel"><div id="summer-cl-content"></div><div class="checkpoint"><span class="checkpoint-icon">📌</span><div class="checkpoint-text"><strong>Summer Outcome</strong>Proof you can finish a project · Strong ML skills</div></div></div>
+    <div id="summer-timeline" class="tab-panel" style="display:none"></div>
+  </div>
+
+  <!-- ══ SEM 3 ══ -->
+  <div class="panel" id="page-sem3">
+    <div class="page-hdr"><div class="crumb">// Semester 3</div><h1>Quantum Computing + QML</h1><div class="sub">QC Basics to Hybrid Models · 16 Weeks</div></div>
+    <div class="prog-wrap"><div class="prog-meta"><span>Progress</span><span class="pct" id="prog-sem3-text">0/0</span></div><div class="prog-bar"><div class="prog-fill" id="prog-sem3" style="width:0%"></div></div></div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('sem3','checklist')">✅ Checklist</button>
+      <button class="tab-btn" onclick="switchTab('sem3','syllabus')">📖 Syllabus</button>
+      <button class="tab-btn" onclick="switchTab('sem3','timeline')">⏱ Timeline</button>
+    </div>
+    <div id="sem3-checklist" class="tab-panel"><div id="sem3-cl-content"></div></div>
+    <div id="sem3-syllabus" class="tab-panel" style="display:none"></div>
+    <div id="sem3-timeline" class="tab-panel" style="display:none"></div>
+  </div>
+
+  <!-- ══ WINTER ══ -->
+  <div class="panel" id="page-winter">
+    <div class="page-hdr"><div class="crumb">// Winter Break</div><h1>Project 1 Sprint</h1><div class="sub">Weeks 41–44 · Variational Quantum Classifier</div></div>
+    <div class="prog-wrap"><div class="prog-meta"><span>Progress</span><span class="pct" id="prog-winter-text">0/0</span></div><div class="prog-bar"><div class="prog-fill" id="prog-winter" style="width:0%"></div></div></div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('winter','checklist')">✅ Checklist</button>
+      <button class="tab-btn" onclick="switchTab('winter','timeline')">⏱ Timeline</button>
+    </div>
+    <div id="winter-checklist" class="tab-panel"><div id="winter-cl-content"></div><div class="checkpoint"><span class="checkpoint-icon">🔥</span><div class="checkpoint-text"><strong>Major IISc Booster Completed</strong>VQC done · GitHub finalized · Report written</div></div></div>
+    <div id="winter-timeline" class="tab-panel" style="display:none"></div>
+  </div>
+
+  <!-- ══ SEM 4 ══ -->
+  <div class="panel" id="page-sem4">
+    <div class="page-hdr"><div class="crumb">// Semester 4</div><h1>Advanced QML + Projects</h1><div class="sub">Research-Level Work · 16 Weeks</div></div>
+    <div class="prog-wrap"><div class="prog-meta"><span>Progress</span><span class="pct" id="prog-sem4-text">0/0</span></div><div class="prog-bar"><div class="prog-fill" id="prog-sem4" style="width:0%"></div></div></div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('sem4','checklist')">✅ Checklist</button>
+      <button class="tab-btn" onclick="switchTab('sem4','syllabus')">📖 Syllabus</button>
+      <button class="tab-btn" onclick="switchTab('sem4','timeline')">⏱ Timeline</button>
+    </div>
+    <div id="sem4-checklist" class="tab-panel"><div id="sem4-cl-content"></div><div class="checkpoint"><span class="checkpoint-icon">🏁</span><div class="checkpoint-text"><strong>IISc Application Ready</strong>Strong math · QC+QML hands-on · 2 serious projects · Research mindset</div></div></div>
+    <div id="sem4-syllabus" class="tab-panel" style="display:none"></div>
+    <div id="sem4-timeline" class="tab-panel" style="display:none"></div>
+  </div>
+
+  <!-- ══ PROJECTS ══ -->
+  <div class="panel" id="page-projects">
+    <div class="page-hdr"><div class="crumb">// Projects</div><h1>All Projects</h1><div class="sub">Your portfolio for IISc application</div></div>
+    <div id="projects-content"></div>
+  </div>
+
+  <!-- ══ HACKATHON ══ -->
+  <div class="panel" id="page-hackathon">
+    <div class="page-hdr"><div class="crumb">// Hackathon</div><h1>Beginner Hackathon Plan</h1><div class="sub">4–6 Week Sprint · Build Fast, Show Results</div></div>
+    <div class="prog-wrap"><div class="prog-meta"><span>Progress</span><span class="pct" id="prog-hack-text">0/0</span></div><div class="prog-bar"><div class="prog-fill" id="prog-hack" style="width:0%"></div></div></div>
+    <div id="hackathon-content"></div>
+  </div>
+
+  <!-- ══ FULL SYLLABUS ══ -->
+  <div class="panel" id="page-fullsyl">
+    <div class="page-hdr"><div class="crumb">// Full Syllabus</div><h1>Complete Syllabus</h1><div class="sub">All topics across all semesters</div></div>
+    <div class="full-syl-intro"><strong>Complete Reference</strong>Every topic from all semesters. Tap any section to expand.</div>
+    <div id="fullsyl-content"></div>
+  </div>
+
+  <!-- ══ BOOKS ══ -->
+  <div class="panel" id="page-books">
+    <div class="page-hdr"><div class="crumb">// Books</div><h1>My Library</h1><div class="sub">Tap 📖 to open · Tap folder to browse</div></div>
+    <div class="books-folders" id="books-folders"></div>
+    <button class="add-book-btn" onclick="openModal()">
+      <span class="add-icon">🗂️</span>
+      <span>Add a New Book</span>
+    </button>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const DATA = {
+  sem2:{
+    checklist:[
+      {section:'🐍 Python Programming',items:[
+        {id:'s2_1',text:'Python data types: int, float, string, boolean',p:'must'},
+        {id:'s2_2',text:'Variables, assignment, input/output',p:'must'},
+        {id:'s2_3',text:'Conditional statements: if, else, elif',p:'must'},
+        {id:'s2_4',text:'Loops: for, while',p:'must'},
+        {id:'s2_5',text:'Functions and scope',p:'must'},
+        {id:'s2_6',text:'Lists, tuples, sets, dictionaries',p:'must'},
+        {id:'s2_7',text:'File handling basics',p:'imp'},
+        {id:'s2_8',text:'Intro to NumPy and Matplotlib',p:'must'},
+      ]},
+      {section:'📐 Linear Algebra',items:[
+        {id:'s2_9',text:'Scalars, vectors, matrices',p:'must'},
+        {id:'s2_10',text:'Vector operations: addition, subtraction, scalar multiplication',p:'must'},
+        {id:'s2_11',text:'Matrix operations: multiply, transpose, inverse, determinant',p:'must'},
+        {id:'s2_12',text:'Identity and zero matrices',p:'imp'},
+        {id:'s2_13',text:'Inner product, norm, orthogonality',p:'must'},
+        {id:'s2_14',text:'Eigenvalues and eigenvectors',p:'must'},
+        {id:'s2_15',text:'Diagonalization and matrix decomposition (LU, QR)',p:'imp'},
+        {id:'s2_16',text:'Applications in ML: PCA, transformations',p:'imp'},
+      ]},
+      {section:'📊 Probability & Statistics',items:[
+        {id:'s2_17',text:'Basics of probability and probability rules',p:'must'},
+        {id:'s2_18',text:'Random variables: discrete and continuous',p:'must'},
+        {id:'s2_19',text:'Conditional probability and independence',p:'must'},
+        {id:'s2_20',text:'Expectation, variance, standard deviation',p:'must'},
+        {id:'s2_21',text:'Covariance and correlation',p:'imp'},
+        {id:'s2_22',text:'Bayes theorem and applications',p:'must'},
+      ]},
+      {section:'🤖 Machine Learning',items:[
+        {id:'s2_23',text:'ML overview: supervised vs unsupervised',p:'must'},
+        {id:'s2_24',text:'ML workflow: data → model → training → evaluation',p:'must'},
+        {id:'s2_25',text:'Performance metrics: accuracy, precision, recall, F1',p:'must'},
+        {id:'s2_26',text:'Overfitting and underfitting',p:'must'},
+        {id:'s2_27',text:'Train-test-validation split',p:'must'},
+        {id:'s2_28',text:'Linear regression (math + code)',p:'must'},
+        {id:'s2_29',text:'Logistic regression and binary classification',p:'must'},
+        {id:'s2_30',text:'SVM: linear SVM and kernel trick',p:'imp'},
+        {id:'s2_31',text:'Perceptron and activation functions',p:'imp'},
+        {id:'s2_32',text:'Scikit-learn: regression, classification, evaluation',p:'must'},
+        {id:'s2_33',text:'Feature scaling and preprocessing',p:'must'},
+      ]},
+      {section:'🔧 Practical & GitHub',items:[
+        {id:'s2_34',text:'Implement vector/matrix ops from scratch in Python',p:'must'},
+        {id:'s2_35',text:'Implement MSE and gradient descent in Python',p:'must'},
+        {id:'s2_36',text:'End-to-end ML pipeline in Python',p:'must'},
+        {id:'s2_37',text:'Clean GitHub setup with README',p:'must'},
+      ]},
+    ],
+    syllabus:[
+      {icon:'📐',title:'Mathematics',sub:'Linear Algebra + Probability',topics:['Scalars, vectors, matrices — operations','Inner product, norm, orthogonality','Eigenvalues and eigenvectors','Diagonalization, LU/QR decomposition','Applications in ML: PCA, transformations','Probability basics and rules','Random variables: discrete and continuous','Conditional probability and Bayes theorem','Expectation, variance, standard deviation','Covariance and correlation'],book:'📚 Gilbert Strang – Introduction to Linear Algebra\n📚 Dimitri Bertsekas – Introduction to Probability\n🎥 3Blue1Brown – Essence of Linear Algebra (YouTube)'},
+      {icon:'🐍',title:'Programming',sub:'Python + NumPy + Matplotlib',topics:['Python data types, variables, I/O','Control flow: if/else, loops','Functions, scope, OOP basics','Lists, tuples, sets, dictionaries','NumPy: arrays, indexing, slicing, broadcasting','Array operations: add, multiply, dot product','Matplotlib: plotting data and graphs','File handling basics'],book:'📚 Python Crash Course – Eric Matthes\n📚 Python Data Science Handbook – Jake VanderPlas (free online)'},
+      {icon:'🤖',title:'Machine Learning',sub:'Classical ML Algorithms',topics:['ML workflow: data → model → evaluation','Linear regression: least squares, MSE, R²','Logistic regression: sigmoid, cross-entropy','SVM: margin, support vectors, kernel trick','Perceptron, activation functions, forward pass','Scikit-learn: fit/predict, pipeline, CV','Feature scaling and preprocessing','Overfitting, bias-variance tradeoff'],book:'📚 Hands-On ML – Aurélien Géron\n🎓 Andrew Ng ML Specialization (Coursera)'},
+      {icon:'📋',title:'Mini Projects',sub:'Apply what you learn',topics:['End-to-end ML pipeline implementation','Data preprocessing, feature scaling, training','Model evaluation and visualization','Documentation and GitHub repository setup','README writing best practices'],book:'💡 Kaggle micro-courses (free)\n💡 Push all work to GitHub weekly'},
+    ],
+    timeline:[
+      {week:'Week 1',title:'Vectors, Scalars & Python Basics',items:['Scalars, vectors, matrices','Python: data types, loops, functions','NumPy arrays — install and explore']},
+      {week:'Week 2',title:'Matrix Operations & NumPy',items:['Matrix multiply, transpose, inverse','NumPy matrix ops and dot product','Solve linear systems with NumPy']},
+      {week:'Week 3',title:'Eigenvalues & Transformations',items:['Eigenvalues & eigenvectors (intuition)','Matrix transformations concept','Plot 2D vector transformations with matplotlib']},
+      {week:'Week 4',title:'Linear Algebra Revision + Coding',items:['Inner product, norms, projections','LU/QR decomposition intro','Matrix multiplication from scratch — submit to GitHub']},
+      {week:'Week 5',title:'Probability Basics',items:['Random variables: discrete & continuous','Probability rules (addition, multiplication)','Simulate coin toss & dice in Python']},
+      {week:'Week 6',title:'Bayes Theorem & Expectation',items:['Bayes theorem','Expectation, covariance, correlation','Implement naive Bayes example']},
+      {week:'Week 7',title:'Cost Functions & Optimization',items:['Loss functions: MSE, cross-entropy','Gradient descent intuition','Visualize loss vs iterations in Python']},
+      {week:'Week 8',title:'Mini Revision + Linear Regression',items:['Review linear algebra + probability','Linear regression from scratch in Python','Plot predicted vs actual values']},
+      {week:'Week 9',title:'Linear Regression Deep Dive',items:['Simple & multiple linear regression','Least squares method derivation','MSE and R² evaluation metrics']},
+      {week:'Week 10',title:'Logistic Regression',items:['Binary classification concept','Sigmoid function and cross-entropy loss','Decision boundaries — visualize in Python']},
+      {week:'Week 11',title:'Overfitting & Model Evaluation',items:['Bias-variance tradeoff','Train-test-validation split in Python','Accuracy, F1, precision, recall']},
+      {week:'Week 12',title:'ML Pipeline Mini Project',items:['Full pipeline: data → preprocess → train → test','Feature scaling (StandardScaler)','Document on GitHub with clear README']},
+      {week:'Week 13',title:'Scikit-Learn Basics',items:['Regression and classification APIs','Cross-validation, GridSearchCV','Compare with manual implementations']},
+      {week:'Week 14',title:'SVM Intuition',items:['Margin, support vectors concept','Linear vs non-linear SVM','Visualize decision boundary with sklearn']},
+      {week:'Week 15',title:'Neural Networks Intro',items:['Perceptron model from scratch','Activation functions: sigmoid, ReLU','Forward pass and simple prediction']},
+      {week:'Week 16',title:'Consolidation + GitHub',items:['Review all ML concepts','Upload and clean all mini-projects','Write clear README for each repo']},
+    ]
+  },
+  summer:{
+    checklist:[
+      {section:'🔬 ML Deep Dive',items:[
+        {id:'su_1',text:'Scikit-learn: multiple datasets, pipelines',p:'must'},
+        {id:'su_2',text:'Feature scaling: StandardScaler, MinMaxScaler',p:'must'},
+        {id:'su_3',text:'SVM implementation and model comparison',p:'must'},
+        {id:'su_4',text:'Hyperparameter tuning: GridSearchCV',p:'imp'},
+        {id:'su_5',text:'Cross-validation and model selection',p:'must'},
+      ]},
+      {section:'🏗️ Mini Project',items:[
+        {id:'su_6',text:'Dataset selection and EDA',p:'must'},
+        {id:'su_7',text:'Model training and evaluation',p:'must'},
+        {id:'su_8',text:'Results visualization',p:'must'},
+        {id:'su_9',text:'Clean GitHub repo with README',p:'must'},
+      ]},
+    ],
+    timeline:[
+      {week:'Weeks 17–18',title:'Scikit-Learn Deep Dive',items:['Multiple datasets practice','Feature scaling: StandardScaler, MinMaxScaler','Scikit-learn Pipeline objects']},
+      {week:'Weeks 19–20',title:'SVM & Model Comparison',items:['SVM full implementation','Hyperparameter tuning with GridSearchCV','Compare: LR vs SVM vs Decision Tree']},
+      {week:'Weeks 21–22',title:'Mini Project — Build Phase',items:['Dataset selection and EDA','Model training + evaluation','Record results and visualize']},
+      {week:'Weeks 23–24',title:'Polish & Publish',items:['Clean GitHub repo structure','Write professional README','Visualize results (plots, metrics)']},
+    ]
+  },
+  sem3:{
+    checklist:[
+      {section:'⚛️ Quantum Basics',items:[
+        {id:'s3_1',text:'Classical vs quantum computing, motivation',p:'must'},
+        {id:'s3_2',text:'Qubits, superposition, measurement',p:'must'},
+        {id:'s3_3',text:'Dirac notation: |0⟩, |1⟩, α|0⟩+β|1⟩',p:'must'},
+        {id:'s3_4',text:'Probability amplitudes and normalization',p:'must'},
+        {id:'s3_5',text:'Inner product and orthogonality in quantum states',p:'imp'},
+      ]},
+      {section:'🔮 Quantum Gates & Circuits',items:[
+        {id:'s3_6',text:'Pauli-X, Y, Z gates',p:'must'},
+        {id:'s3_7',text:'Hadamard, Phase, T gates',p:'must'},
+        {id:'s3_8',text:'Rotation gates: Rx, Ry, Rz',p:'must'},
+        {id:'s3_9',text:'Multi-qubit: tensor product, Bell states, CNOT',p:'must'},
+        {id:'s3_10',text:'Building and running circuits in Qiskit',p:'must'},
+      ]},
+      {section:'🧮 Quantum Algorithms',items:[
+        {id:'s3_11',text:'Quantum parallelism concept',p:'imp'},
+        {id:'s3_12',text:'Deutsch algorithm implementation in Qiskit',p:'must'},
+        {id:'s3_13',text:'Grover\'s algorithm intuition',p:'must'},
+      ]},
+      {section:'🤖 Intro to QML',items:[
+        {id:'s3_14',text:'Variational quantum circuits: parameters + rotation gates',p:'must'},
+        {id:'s3_15',text:'Loss functions for hybrid models',p:'must'},
+        {id:'s3_16',text:'Quantum feature maps: ZZFeatureMap, PauliFeatureMap',p:'must'},
+        {id:'s3_17',text:'Variational Quantum Classifier (VQC) implementation',p:'must'},
+        {id:'s3_18',text:'Quantum kernels and QSVM intuition',p:'imp'},
+        {id:'s3_19',text:'Noise simulation in Qiskit',p:'imp'},
+        {id:'s3_20',text:'Hybrid classical-quantum training loop',p:'must'},
+      ]},
+      {section:'🔧 Practical',items:[
+        {id:'s3_21',text:'Visualize qubit on Bloch sphere',p:'must'},
+        {id:'s3_22',text:'Create Bell states in Qiskit',p:'must'},
+        {id:'s3_23',text:'Build VQC for binary classification',p:'must'},
+        {id:'s3_24',text:'Push all work to GitHub',p:'must'},
+      ]},
+    ],
+    syllabus:[
+      {icon:'📐',title:'Mathematics',sub:'Quantum Mechanics Math',topics:['Hilbert space and quantum states','Dirac bra-ket notation','Complex probability amplitudes','Normalization of quantum states','Inner product and orthogonality','Tensor product of vector spaces','Expectation values of operators','Matrix representation of quantum gates'],book:'📚 Nielsen & Chuang – Ch. 1–2\n📚 Bernhardt – Quantum Computing for Everyone'},
+      {icon:'⚛️',title:'Quantum Computing',sub:'Gates, Circuits & Algorithms',topics:['Qubits, superposition, measurement','Single-qubit gates: Pauli, Hadamard, Phase, T, Rotations','Multi-qubit systems, entanglement, Bell states','CNOT and controlled gates','Qiskit: Terra, Aer, Ignis overview','Simulators vs real IBMQ hardware','Deutsch algorithm','Grover\'s algorithm intuition'],book:'📚 IBM Qiskit Textbook (qiskit.org/learn — free)\n📚 Nielsen & Chuang Ch. 1–6'},
+      {icon:'🤖',title:'QML & Hybrid Models',sub:'Quantum Machine Learning Entry',topics:['Variational quantum circuits (VQC)','Parameterized circuits and rotation gates','Loss functions for hybrid models','Quantum feature maps: ZZ, Pauli','Variational Quantum Classifier (VQC)','Quantum kernels and QSVM','Classical-quantum training loop','Noise sources and mitigation intro'],book:'📚 PennyLane documentation (pennylane.ai)\n📄 Biamonte et al. 2017 – "Quantum ML" (arXiv)'},
+      {icon:'🛠️',title:'Tools & Practical',sub:'Qiskit & PennyLane',topics:['Qiskit circuit building','Measuring and visualizing quantum states','Bloch sphere visualization','Running on IBMQ simulator','PennyLane: qnode decorator','GitHub documentation for quantum code'],book:'💡 IBM Quantum (quantum.ibm.com)\n💡 PennyLane demos (pennylane.ai/qml)'},
+    ],
+    timeline:[
+      {week:'Week 25',title:'Intro to Quantum Computing',items:['Classical vs quantum — motivation','Qubits, superposition, measurement','Visualize qubit on Bloch sphere']},
+      {week:'Week 26',title:'Quantum States & Dirac Notation',items:['|0⟩, |1⟩ representation in vectors','Probability amplitudes','Normalization, inner product']},
+      {week:'Week 27',title:'Single-Qubit Gates',items:['Pauli X, Y, Z; Hadamard, T gates','Rotation gates Rx, Ry, Rz','Implement in Qiskit, visualize on Bloch sphere']},
+      {week:'Week 28',title:'Multi-Qubit Systems',items:['Tensor product of qubits','Bell states and entanglement','CNOT gate — build in Qiskit']},
+      {week:'Week 29',title:'Qiskit Basics & Circuits',items:['Build 2-qubit circuits','Measurement + classical registers','Run on Qiskit Aer simulator']},
+      {week:'Week 30',title:'Quantum Algorithms',items:['Quantum parallelism concept','Implement Deutsch algorithm','Grover\'s algorithm — intuition']},
+      {week:'Week 31',title:'Variational Circuits',items:['Parameterized circuits and rotation gates','Loss function definition for hybrid models','Training loop basics']},
+      {week:'Week 32',title:'Measurement & Expectation Values',items:['Pauli operator observables','Map quantum → classical output','Compute expectation values in Qiskit']},
+      {week:'Week 33',title:'Quantum Feature Maps',items:['ZZFeatureMap, PauliFeatureMap','Encode 2D classical data','High-dimensional mapping intuition']},
+      {week:'Week 34',title:'Variational Quantum Classifier',items:['VQC for binary classification','Loss + classical optimizer loop','Compare classical vs quantum predictions']},
+      {week:'Week 35',title:'Quantum Kernels',items:['Kernel trick recap','Quantum kernel definition','Build simple QSVM in Qiskit']},
+      {week:'Week 36',title:'Noise & Hybrid Models',items:['Noise simulation in Qiskit','Hybrid classical-quantum pipeline','Track training loss over iterations']},
+      {week:'Weeks 37–38',title:'Project Planning',items:['Dataset selection and circuit design','VQC architecture plan','Baseline classical model']},
+      {week:'Weeks 39–40',title:'Initial Experiments + Proposal',items:['Initial training runs','Analyze early results','Write project proposal document']},
+    ]
+  },
+  winter:{
+    checklist:[
+      {section:'🔥 Project 1: Variational Quantum Classifier',items:[
+        {id:'wi_1',text:'Dataset preprocessing and baseline classical model',p:'must'},
+        {id:'wi_2',text:'Quantum circuit implementation (VQC)',p:'must'},
+        {id:'wi_3',text:'Training and tuning the hybrid model',p:'must'},
+        {id:'wi_4',text:'Noise analysis on results',p:'imp'},
+        {id:'wi_5',text:'Report writing (4–6 pages in LaTeX)',p:'must'},
+        {id:'wi_6',text:'GitHub repository finalized with README',p:'must'},
+      ]},
+    ],
+    timeline:[
+      {week:'Week 41',title:'Dataset & Baseline',items:['Dataset preprocessing','Baseline classical model (sklearn SVM/LR)','Feature encoding plan for quantum input']},
+      {week:'Week 42',title:'Quantum Circuit Build',items:['VQC architecture design','Implement in Qiskit/PennyLane','Run initial training']},
+      {week:'Week 43',title:'Training, Tuning & Noise',items:['Hyperparameter tuning','Noise simulation and analysis','Compare classical vs quantum performance']},
+      {week:'Week 44',title:'Report & GitHub',items:['Write 4–6 page report in LaTeX','Finalize GitHub repo with clean README','Visualize: loss curves, decision boundaries']},
+    ]
+  },
+  sem4:{
+    checklist:[
+      {section:'🔬 Advanced QML',items:[
+        {id:'s4_1',text:'Multi-layer variational circuits',p:'must'},
+        {id:'s4_2',text:'Circuit depth vs expressibility tradeoff',p:'imp'},
+        {id:'s4_3',text:'Parameter-shift rule for gradients',p:'must'},
+        {id:'s4_4',text:'Optimization: COBYLA, SPSA techniques',p:'imp'},
+        {id:'s4_5',text:'Quantum kernels and QSVM deep dive',p:'must'},
+        {id:'s4_6',text:'Multi-class classification with VQC',p:'must'},
+        {id:'s4_7',text:'Quantum regression with VQC',p:'imp'},
+        {id:'s4_8',text:'Hybrid model: classical preprocessing + quantum',p:'must'},
+      ]},
+      {section:'🛡️ Noise & Error Mitigation',items:[
+        {id:'s4_9',text:'Noise types: decoherence, gate errors, measurement noise',p:'must'},
+        {id:'s4_10',text:'Simulating noise in Qiskit/PennyLane',p:'must'},
+        {id:'s4_11',text:'Readout error mitigation, circuit folding',p:'imp'},
+        {id:'s4_12',text:'Impact of noise on QML models',p:'must'},
+      ]},
+      {section:'📖 Research Skills',items:[
+        {id:'s4_13',text:'Read 2 QML research papers and summarize',p:'must'},
+        {id:'s4_14',text:'Identify research gaps in QML',p:'imp'},
+        {id:'s4_15',text:'Design research-style experiments',p:'imp'},
+      ]},
+      {section:'🎯 IISc Application Prep',items:[
+        {id:'s4_16',text:'Organize GitHub: pinned repos, clean READMEs',p:'must'},
+        {id:'s4_17',text:'Write Statement of Purpose (SOP) draft',p:'must'},
+        {id:'s4_18',text:'Build 1-page CV in LaTeX',p:'must'},
+        {id:'s4_19',text:'Identify 4–5 IISc professors to target',p:'must'},
+        {id:'s4_20',text:'Read 2 papers from each target professor',p:'must'},
+        {id:'s4_21',text:'Request recommendation letter from college professor',p:'must'},
+      ]},
+    ],
+    syllabus:[
+      {icon:'📐',title:'Mathematics',sub:'Advanced Optimization & Analysis',topics:['Parameter-shift rule for gradient calculation','Optimization: gradient descent, COBYLA, SPSA','Convergence issues in variational training','Loss function selection: MSE, cross-entropy','Regularization techniques for QML','PCA for dimensionality reduction before encoding','Statistical comparison of classical vs quantum results'],book:'📚 Boyd & Vandenberghe – Convex Optimization (reference)\n📄 Mitarai et al. 2018 – "Quantum Circuit Learning" (arXiv)'},
+      {icon:'⚛️',title:'Quantum Computing',sub:'Advanced QML Models',topics:['Multi-layer variational circuits','Circuit depth vs expressibility','Quantum kernel definition and construction','QSVM: feature maps + kernel matrix','Multi-class VQC classification','Quantum regression models','Noise sources: decoherence, gate errors','Error mitigation: readout, circuit folding'],book:'📚 PennyLane Advanced Tutorials\n📄 Havlíček et al. 2019 – "Supervised learning with quantum-enhanced feature spaces" (Nature)'},
+      {icon:'🤖',title:'Hybrid Models & Research',sub:'Portfolio-Level Work',topics:['Classical preprocessing: scaling, PCA for quantum','Combining neural networks with quantum circuits','Training loop optimization and debugging','Reading QML research papers systematically','Identifying open problems in QML','Designing research-style experiments','Performance metrics: accuracy, speed, noise robustness'],book:'📄 Biamonte et al. 2017 – "Quantum ML" (Nature)\n📄 Cerezo et al. 2021 – "Variational Quantum Algorithms" (Nature Reviews)'},
+      {icon:'📋',title:'Projects & Portfolio',sub:'IISc Application Readiness',topics:['Project 1: Variational Quantum Classifier (Wk 9–12)','Project 2: Quantum Kernel vs Classical Kernel (Wk 13–16)','GitHub organization and documentation','Writing README and mini-reports','Visualization of circuit outputs','LaTeX CV and Statement of Purpose (SOP)','Professor targeting and cold email writing'],book:'💡 Overleaf LaTeX (free online)\n💡 "How to Read a Paper" – Keshav (3 pages, Google it)'},
+    ],
+    timeline:[
+      {week:'Weeks 1–2',title:'Review + Advanced Variational Circuits',items:['Multi-layer VQC design','Parameter-shift rule derivation','Optimizer comparison: COBYLA vs SPSA vs Adam']},
+      {week:'Weeks 3–4',title:'Quantum Kernels + Noise Mitigation',items:['QSVM implementation from scratch','Error mitigation: readout, circuit folding','Run on IBMQ noisy simulator']},
+      {week:'Weeks 5–6',title:'Advanced Classification + Regression',items:['Multi-class VQC','Quantum regression pipeline','Decision boundary visualization']},
+      {week:'Weeks 7–8',title:'Hybrid Models + Research Skills',items:['Classical preprocessing + quantum pipeline','Read 2 QML papers and summarize','Identify 1–2 research gaps']},
+      {week:'Weeks 9–12',title:'🔥 Project 1: VQC Classifier',items:['Dataset prep + quantum encoding','Multi-layer circuit training','Compare classical vs quantum — write mini-report']},
+      {week:'Weeks 13–16',title:'🔥 Project 2: Quantum vs Classical Kernel',items:['Classical SVM baseline','QSVM implementation','Comparison report + GitHub + optional blog']},
+    ]
+  }
+};
+
+const HACKATHON = {
+  checklist:[
+    {section:'🟢 Week 1 — Python Basics',items:[
+      {id:'h1',text:'Variables, if/else, loops',p:'must'},
+      {id:'h2',text:'Lists and dictionaries',p:'must'},
+      {id:'h3',text:'Functions',p:'must'},
+      {id:'h4',text:'Practice: calculator and number guessing game',p:'must'},
+    ]},
+    {section:'🟢 Week 2 — Web Basics',items:[
+      {id:'h5',text:'What is frontend/backend',p:'must'},
+      {id:'h6',text:'HTML basics (tags, structure)',p:'must'},
+      {id:'h7',text:'Python Flask basics',p:'must'},
+      {id:'h8',text:'Build: button → backend function → response',p:'must'},
+    ]},
+    {section:'🟢 Week 3 — APIs & Real Projects',items:[
+      {id:'h9',text:'What is an API and how to use public APIs',p:'must'},
+      {id:'h10',text:'JSON: read and parse responses',p:'must'},
+      {id:'h11',text:'Build a weather app or student helper',p:'must'},
+    ]},
+    {section:'🟢 Week 4 — Git & Hackathon Mindset',items:[
+      {id:'h12',text:'GitHub: commit, push, pull',p:'must'},
+      {id:'h13',text:'README writing',p:'must'},
+      {id:'h14',text:'Explain your project in 2 minutes',p:'must'},
+      {id:'h15',text:'Push complete project to GitHub',p:'must'},
+    ]},
+    {section:'🟡 Optional Weeks 5–6',items:[
+      {id:'h16',text:'SQLite database basics',p:'nice'},
+      {id:'h17',text:'Login system',p:'nice'},
+      {id:'h18',text:'Deploy on Render or Vercel',p:'nice'},
+    ]},
+  ],
+  weeks:[
+    {num:'Week 1',title:'Python Speed Run',goal:'Write small programs fast',color:'#2ecc71',learn:['Variables, if/else','Loops','Lists & dictionaries','Functions'],build:'Calculator, number guessing game'},
+    {num:'Week 2',title:'Make It Visible in Browser',goal:'Something working in browser',color:'#00d4ff',learn:['Frontend vs backend concept','HTML basics','Python Flask'],build:'Webpage + button → backend response'},
+    {num:'Week 3',title:'APIs & Real Projects',goal:'Build hackathon-worthy app',color:'#6c47ff',learn:['What is an API','Public API usage','JSON parsing'],build:'Weather app / Student helper / Chatbot'},
+    {num:'Week 4',title:'Git + Teamwork',goal:'Be hackathon-ready',color:'#ffc93c',learn:['GitHub: commit, push, pull','README writing','2-min project pitch'],build:'Push project + explain it clearly'},
+    {num:'Wk 5–6',title:'Optional Power-Ups',goal:'Stand out from crowd',color:'#ff8c42',learn:['SQLite database','Login system','Deploy to Render/Vercel'],build:'Full-stack mini app'},
+  ]
+};
+
+const FULL_SYLLABUS=[
+  {icon:'📐',title:'Mathematics',sub:'Complete math for ML & QC',topics:['— LINEAR ALGEBRA —','Scalars, vectors, matrices','Vector operations: add, subtract, scalar multiply','Matrix: multiply, transpose, inverse, determinant','Inner product, norm, orthogonality','Eigenvalues and eigenvectors','Diagonalization, LU/QR decomposition','PCA and ML applications','— PROBABILITY & STATISTICS —','Probability basics and rules','Random variables: discrete and continuous','Conditional probability and Bayes theorem','Expectation, variance, covariance, correlation','— QUANTUM MATHEMATICS —','Hilbert space and quantum states','Dirac bra-ket notation','Complex probability amplitudes, normalization','Tensor product of vector spaces','Expectation values of operators','— OPTIMIZATION —','Gradient descent: batch, SGD, mini-batch','Cost functions: MSE, cross-entropy','Parameter-shift rule','COBYLA, SPSA optimizers'],book:'📚 Strang – Linear Algebra and Its Applications\n📚 Bertsekas – Introduction to Probability\n📚 Nielsen & Chuang – Quantum Computation and Quantum Information\n🎥 3Blue1Brown – Essence of Linear Algebra (YouTube)'},
+  {icon:'🐍',title:'Programming',sub:'Python, NumPy, Qiskit, PennyLane',topics:['— PYTHON CORE —','Data types, variables, I/O','Control flow, loops, functions','Lists, tuples, sets, dictionaries','OOP: classes, inheritance','File handling','— DATA SCIENCE —','NumPy: arrays, broadcasting, vectorization','Pandas: DataFrames, groupby, merge','Matplotlib & Seaborn: visualization','Scikit-learn: pipelines, preprocessing, evaluation','— QUANTUM TOOLS —','Qiskit: circuit building, simulators, IBMQ','PennyLane: quantum nodes, hybrid training','Bloch sphere visualization','— WEB/HACKATHON —','HTML basics, Python Flask','REST APIs and JSON','GitHub: commit, push, README','SQLite basics, deployment (Render/Vercel)'],book:'📚 Python Crash Course – Eric Matthes\n📚 Python Data Science Handbook – VanderPlas (free)\n📚 Qiskit Textbook (qiskit.org/learn – free)\n📚 PennyLane tutorials (pennylane.ai)'},
+  {icon:'🤖',title:'Machine Learning',sub:'Classical ML from scratch to advanced',topics:['— FOUNDATIONS —','ML workflow: data → model → evaluation','Supervised vs unsupervised learning','Train-test-validation split','Bias-variance tradeoff, overfitting','Metrics: accuracy, precision, recall, F1, MSE, R²','— ALGORITHMS —','Linear regression (math + code)','Logistic regression: sigmoid, cross-entropy','SVM: margin, kernel trick (RBF, polynomial)','Perceptron, activation functions, forward pass','— TOOLS —','Scikit-learn: fit/predict, pipeline, CV','Feature scaling and preprocessing','Hyperparameter tuning: GridSearchCV','Model comparison and selection'],book:'📚 Hands-On ML with Scikit-Learn – Géron\n🎓 Andrew Ng ML Specialization (Coursera)\n📚 Python Data Science Handbook – VanderPlas'},
+  {icon:'⚛️',title:'Quantum Computing',sub:'From qubits to quantum algorithms',topics:['— FUNDAMENTALS —','Classical vs quantum computing','Qubits, superposition, measurement','Bloch sphere representation','— GATES & CIRCUITS —','Single-qubit: Pauli X/Y/Z, Hadamard, Phase, T','Rotation gates: Rx, Ry, Rz','Multi-qubit: tensor product, Bell states, CNOT','Qiskit circuit building and simulation','— ALGORITHMS —','Deutsch algorithm','Grover\'s search algorithm','Quantum Fourier Transform (concept)','Shor\'s algorithm (conceptual)','— NOISE —','Decoherence, gate errors, measurement noise','NISQ era limitations','Error mitigation techniques'],book:'📚 Nielsen & Chuang – Quantum Computation and QI\n📚 Bernhardt – Quantum Computing for Everyone\n📚 IBM Qiskit Textbook (free)'},
+  {icon:'🔬',title:'Quantum Machine Learning',sub:'Complete QML: intro to research level',topics:['— ENTRY LEVEL —','Motivation for QML','Variational quantum circuits (VQC)','Parameterized circuits and rotation gates','Loss functions for hybrid models','— FEATURE ENCODING —','Quantum feature maps: ZZFeatureMap, PauliFeatureMap','Encoding classical data into quantum states','— CLASSIFIERS —','Variational Quantum Classifier (VQC)','Hybrid classical-quantum training loop','Multi-class classification','— KERNELS —','Quantum kernel definition','QSVM implementation','Comparison with classical kernels','— ADVANCED —','Multi-layer circuits, circuit depth tradeoff','Parameter-shift rule, quantum regression','Noise impact on QML models','PennyLane hybrid pipeline'],book:'📄 Biamonte et al. 2017 – "Quantum ML" (Nature)\n📄 Havlíček et al. 2019 – Nature\n📄 Cerezo et al. 2021 – Nature Reviews\n📚 PennyLane documentation (pennylane.ai)'},
+];
+
+const PROJECTS=[
+  {sem:'Sem 2',icon:'💳',title:'Banking System — Python Edition',desc:'Rebuild your Java banking system in Python using OOP. Add file-based persistence, interest calculation, CLI menu. Push to GitHub.',tech:['Python','OOP','File I/O','Git'],diff:'easy',why:'Proves you can transfer Java knowledge to Python. First GitHub project.'},
+  {sem:'Sem 2',icon:'📊',title:'Statistics Explorer',desc:'Script that reads a CSV, computes mean/median/std/correlation, and plots histograms with Matplotlib.',tech:['Python','NumPy','Matplotlib','CSV'],diff:'easy',why:'Combines Python + Math practice. Shows real data work.'},
+  {sem:'Summer',icon:'🚢',title:'Titanic Survival Predictor (Kaggle)',desc:'Full ML pipeline: EDA → feature engineering → model comparison (LR, RF, SVM) → Kaggle submission. Target >78% accuracy.',tech:['Python','Pandas','Scikit-learn','Kaggle'],diff:'easy',why:'Classic benchmark. Shows end-to-end ML thinking.'},
+  {sem:'Summer',icon:'🏠',title:'House Price Regression',desc:'Predict house prices on Ames Housing dataset. Feature engineering, handling skewed data, ensemble models.',tech:['Python','Pandas','XGBoost','Seaborn'],diff:'med',why:'Regression + feature engineering — used directly in research.'},
+  {sem:'Sem 3',icon:'✍️',title:'MNIST Digit Classifier',desc:'Build from scratch in NumPy, then rebuild in PyTorch. Add Streamlit interface where you draw a digit and it predicts.',tech:['NumPy','PyTorch','Streamlit'],diff:'med',why:'Shows progression from scratch to framework. Demo impresses professors.'},
+  {sem:'Sem 3',icon:'⚛️',title:'Quantum Basics Demo (Qiskit)',desc:'3 circuits: (1) coin flip, (2) Bell state/entanglement, (3) quantum teleportation. Bloch sphere visualization + explainer notebook.',tech:['Qiskit','Python','Jupyter'],diff:'easy',why:'Shows you wrote actual quantum code, not just theory.'},
+  {sem:'Winter',icon:'🎯',title:'Variational Quantum Classifier — Project 1',desc:'Full pipeline: preprocessing → baseline → VQC → hybrid training → noise analysis → 4–6 page report.',tech:['Qiskit','PennyLane','Python','LaTeX'],diff:'hard',why:'Major IISc portfolio project. Research-level QML work.'},
+  {sem:'Sem 4',icon:'🔬',title:'Quantum Kernel vs Classical Kernel — Project 2',desc:'Research comparison: classical SVM vs QSVM. Compare accuracy, training time, noise sensitivity. Write research report.',tech:['PennyLane','Scikit-learn','Python','LaTeX'],diff:'hard',why:'Research-style project — directly impresses IISc QML labs.'},
+];
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let state = { checks:{}, books:[] };
+
+function saveLocal(){try{localStorage.setItem('iisc_v3',JSON.stringify(state));}catch(e){}}
+function loadLocal(){try{const d=localStorage.getItem('iisc_v3');if(d)state=JSON.parse(d);}catch(e){}}
+
+// ═══════════════════════════════════════
+// EXPORT / IMPORT
+// ═══════════════════════════════════════
+function exportData(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='iisc_progress.json';a.click();
+}
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{try{state=JSON.parse(ev.target.result);saveLocal();renderAll();}catch(err){alert('Invalid file');}};
+  r.readAsText(file);
+}
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+let currentPage='overview';
+function showPage(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-pill').forEach(p=>p.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  const pi=document.getElementById('pill-'+id);
+  if(pg)pg.classList.add('active');
+  if(pi)pi.classList.add('active');
+  currentPage=id;
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════
+function switchTab(sem,tab){
+  const page=document.getElementById('page-'+sem);
+  if(!page)return;
+  page.querySelectorAll('.tab-panel').forEach(p=>p.style.display='none');
+  const target=document.getElementById(sem+'-'+tab);
+  if(target)target.style.display='block';
+  page.querySelectorAll('.tab-btn').forEach(b=>{
+    const isActive=(tab==='checklist'&&b.textContent.includes('Check'))||(tab==='syllabus'&&b.textContent.includes('Syl'))||(tab==='timeline'&&b.textContent.includes('Time'));
+    b.classList.toggle('active',isActive);
+  });
+}
+
+// ═══════════════════════════════════════
+// CHECKLIST
+// ═══════════════════════════════════════
+function toggle(id){
+  state.checks[id]=!state.checks[id];
+  saveLocal();
+  const el=document.getElementById('ci_'+id);
+  if(el)el.classList.toggle('done',!!state.checks[id]);
+  updateProgress();
+}
+
+function buildChecklist(sections,containerId){
+  const c=document.getElementById(containerId);if(!c)return;
+  let html='';
+  sections.forEach(sec=>{
+    html+=`<div class="cl-section"><div class="cl-sec-title">${sec.section}</div>`;
+    sec.items.forEach(item=>{
+      const done=!!state.checks[item.id];
+      html+=`<div class="check-item ${done?'done':''}" id="ci_${item.id}" onclick="toggle('${item.id}')">
+        <div class="checkbox"><span class="check-tick">✓</span></div>
+        <div class="check-label">${item.text}</div>
+        <span class="p-badge p-${item.p}">${item.p.toUpperCase()}</span>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  c.innerHTML=html;
+}
+
+// ═══════════════════════════════════════
+// SYLLABUS
+// ═══════════════════════════════════════
+function buildSyllabus(sylData,containerId){
+  const c=document.getElementById(containerId);if(!c)return;
+  let html='';
+  sylData.forEach((s,i)=>{
+    const uid=containerId+'_'+i;
+    html+=`<div class="syl-group" id="${uid}">
+      <div class="syl-group-head" onclick="document.getElementById('${uid}').classList.toggle('open')">
+        <span class="syl-group-icon">${s.icon}</span>
+        <div class="syl-group-info"><h3>${s.title}</h3><p>${s.sub}</p></div>
+        <span class="syl-arrow">▼</span>
+      </div>
+      <div class="syl-body"><div class="syl-body-inner">
+        <ul class="syl-topics">${s.topics.map(t=>t.startsWith('—')?`<li class="syl-header-li">${t}</li>`:`<li>${t}</li>`).join('')}</ul>
+        <div class="book-ref">${s.book.replace(/\n/g,'<br>')}</div>
+      </div></div>
+    </div>`;
+  });
+  c.innerHTML=html;
+}
+
+// ═══════════════════════════════════════
+// TIMELINE
+// ═══════════════════════════════════════
+function buildTimeline(weeks,containerId,color){
+  const c=document.getElementById(containerId);if(!c)return;
+  let html='<div class="timeline-wrap">';
+  weeks.forEach((w,i)=>{
+    const uid=containerId+'_tl_'+i;
+    html+=`<div class="tl-item">
+      <div class="tl-node">
+        <div class="tl-dot-col"><div class="tl-dot" style="border-color:${color||'var(--acc)'}"></div></div>
+        <div class="tl-card" id="${uid}" onclick="this.classList.toggle('open')">
+          <div class="tl-card-head">
+            <span class="tl-week-tag">${w.week}</span>
+            <span class="tl-card-title">${w.title}</span>
+            <span class="tl-card-arrow">▼</span>
+          </div>
+          <div class="tl-card-body"><div class="tl-card-inner">
+            <ul>${w.items.map(it=>`<li>${it}</li>`).join('')}</ul>
+          </div></div>
+        </div>
+      </div>
+    </div>`;
+  });
+  html+='</div>';
+  c.innerHTML=html;
+}
+
+// ═══════════════════════════════════════
+// PROJECTS
+// ═══════════════════════════════════════
+function buildProjects(){
+  const c=document.getElementById('projects-content');if(!c)return;
+  const sems=[...new Set(PROJECTS.map(p=>p.sem))];
+  let html='';
+  sems.forEach(sem=>{
+    html+=`<div class="cl-sec-title" style="margin-bottom:13px;">${sem}</div>`;
+    PROJECTS.filter(p=>p.sem===sem).forEach(p=>{
+      html+=`<div class="proj-card">
+        <div class="proj-head"><span class="proj-icon">${p.icon}</span><div class="proj-title">${p.title}</div><span class="proj-diff d-${p.diff}">${p.diff}</span></div>
+        <div class="proj-desc">${p.desc}</div>
+        <div class="tech-pills">${p.tech.map(t=>`<span class="tech-pill">${t}</span>`).join('')}</div>
+        <div class="proj-why">💡 ${p.why}</div>
+      </div>`;
+    });
+  });
+  c.innerHTML=html;
+}
+
+// ═══════════════════════════════════════
+// HACKATHON
+// ═══════════════════════════════════════
+function buildHackathon(){
+  const c=document.getElementById('hackathon-content');if(!c)return;
+  let html='';
+  HACKATHON.weeks.forEach((w,i)=>{
+    const uid='hack_wk_'+i;
+    html+=`<div class="hack-week-card" id="${uid}">
+      <div class="hack-week-head" onclick="document.getElementById('${uid}').classList.toggle('open')">
+        <span class="hack-week-num">${w.num}</span>
+        <div><div class="hack-week-title">${w.title}</div><div style="font-size:11px;color:var(--muted)">Goal: ${w.goal}</div></div>
+        <span class="hack-week-arrow">▼</span>
+      </div>
+      <div class="hack-week-body"><div class="hack-week-inner">
+        <div style="margin-bottom:10px;">
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--sub);margin-bottom:6px;">LEARN</div>
+          ${w.learn.map(l=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);"><div style="width:6px;height:6px;border-radius:50%;background:${w.color};flex-shrink:0;"></div><span style="font-size:13px;">${l}</span></div>`).join('')}
+        </div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:10px 12px;">
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--sub);margin-bottom:4px;">BUILD</div>
+          <div style="font-size:13px;">${w.build}</div>
+        </div>
+      </div></div>
+    </div>`;
+  });
+  html+=`<div style="height:20px;"></div><div class="cl-sec-title">Checklist</div>`;
+  HACKATHON.checklist.forEach(sec=>{
+    html+=`<div class="cl-section"><div class="cl-sec-title">${sec.section}</div>`;
+    sec.items.forEach(item=>{
+      const done=!!state.checks[item.id];
+      html+=`<div class="check-item ${done?'done':''}" id="ci_${item.id}" onclick="toggle('${item.id}')">
+        <div class="checkbox"><span class="check-tick">✓</span></div>
+        <div class="check-label">${item.text}</div>
+        <span class="p-badge p-${item.p}">${item.p.toUpperCase()}</span>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  c.innerHTML=html;
+}
+
+// ═══════════════════════════════════════
+// BOOKS
+// ═══════════════════════════════════════
+const BOOK_FOLDERS=[
+  {name:'Mathematics',icon:'📐',color:'#00d4ff'},
+  {name:'Machine Learning',icon:'🤖',color:'#6c47ff'},
+  {name:'Quantum Computing',icon:'⚛️',color:'#ffc93c'},
+  {name:'Programming',icon:'🐍',color:'#2ecc71'},
+];
+
+function openModal(){document.getElementById('bookModal').classList.add('open');}
+function closeModal(){document.getElementById('bookModal').classList.remove('open');}
+function closeModalOutside(e){if(e.target===document.getElementById('bookModal'))closeModal();}
+
+function addBook(){
+  const name=document.getElementById('bookName').value.trim();
+  const url=document.getElementById('bookUrl').value.trim();
+  const folder=document.getElementById('bookFolder').value;
+  if(!name||!url){alert('Please enter both title and link');return;}
+  state.books.push({id:Date.now(),name,url,folder});
+  saveLocal();
+  document.getElementById('bookName').value='';
+  document.getElementById('bookUrl').value='';
+  closeModal();
+  renderBooks();
+}
+
+function deleteBook(id){
+  state.books=state.books.filter(b=>b.id!==id);
+  saveLocal();
+  renderBooks();
+}
+
+function renderBooks(){
+  const c=document.getElementById('books-folders');if(!c)return;
+  let html='';
+  BOOK_FOLDERS.forEach((folder,fi)=>{
+    const uid='bf_'+fi;
+    const books=state.books.filter(b=>b.folder===folder.name);
+    html+=`<div class="book-folder" id="${uid}">
+      <div class="book-folder-head" onclick="document.getElementById('${uid}').classList.toggle('open')">
+        <span class="book-folder-icon">${folder.icon}</span>
+        <div class="book-folder-info">
+          <div class="book-folder-name">${folder.name}</div>
+          <div class="book-folder-count">${books.length} book${books.length!==1?'s':''}</div>
+        </div>
+        <span class="book-folder-arrow">▼</span>
+      </div>
+      <div class="book-folder-body"><div class="book-folder-inner">
+        ${books.length===0?'<div class="book-empty-folder">No books yet — tap "Add a New Book" below</div>':
+          books.map(b=>`<div class="book-row">
+            <button class="book-open-btn" onclick="window.open('${b.url}','_blank')" title="Open book">📖</button>
+            <div class="book-row-info">
+              <div class="book-row-name">${b.name}</div>
+              <div class="book-row-folder">${folder.name}</div>
+            </div>
+            <button class="book-del" onclick="deleteBook(${b.id})" title="Remove">🗑</button>
+          </div>`).join('')}
+      </div></div>
+    </div>`;
+  });
+  c.innerHTML=html;
+}
+
+// ═══════════════════════════════════════
+// PROGRESS + OVERVIEW
+// ═══════════════════════════════════════
+const OV_ITEMS=[
+  {id:'sem2',label:'Sem 2',icon:'📘',page:'sem2',color:'#6c47ff'},
+  {id:'summer',label:'Summer',icon:'☀️',page:'summer',color:'#ff5c5c'},
+  {id:'sem3',label:'Sem 3',icon:'⚛️',page:'sem3',color:'#00d4ff'},
+  {id:'winter',label:'Winter',icon:'❄️',page:'winter',color:'#ffc93c'},
+  {id:'sem4',label:'Sem 4',icon:'🔬',page:'sem4',color:'#2ecc71'},
+  {id:'projects',label:'Projects',icon:'🏗️',page:'projects',color:'#ff8c42'},
+  {id:'hackathon',label:'Hackathon',icon:'🏆',page:'hackathon',color:'#ffc93c'},
+  {id:'fullsyl',label:'Syllabus',icon:'📚',page:'fullsyl',color:'#9b7fff'},
+  {id:'books',label:'Books',icon:'📖',page:'books',color:'#00d4ff'},
+];
+
+function allItemsFor(key){
+  if(key==='hack')return HACKATHON.checklist.flatMap(s=>s.items);
+  return DATA[key]?DATA[key].checklist.flatMap(s=>s.items):[];
+}
+function countChecks(items){
+  const total=items.length,done=items.filter(i=>state.checks[i.id]).length;
+  return{done,total,pct:total>0?Math.round(done/total*100):0};
+}
+
+function updateProgress(){
+  // Per-sem bars
+  ['sem2','summer','sem3','winter','sem4'].forEach(k=>{
+    const{done,total,pct}=countChecks(allItemsFor(k));
+    const bar=document.getElementById('prog-'+k);
+    const txt=document.getElementById('prog-'+k+'-text');
+    if(bar)bar.style.width=pct+'%';
+    if(txt)txt.textContent=`${done}/${total} · ${pct}%`;
+  });
+  // Hackathon
+  const hc=countChecks(allItemsFor('hack'));
+  const hbar=document.getElementById('prog-hack');
+  const htxt=document.getElementById('prog-hack-text');
+  if(hbar)hbar.style.width=hc.pct+'%';
+  if(htxt)htxt.textContent=`${hc.done}/${hc.total} · ${hc.pct}%`;
+
+  // Overview total
+  const checkableKeys=['sem2','summer','sem3','winter','sem4','hack'];
+  let totalAll=0,doneAll=0;
+  checkableKeys.forEach(k=>{const{done,total}=countChecks(allItemsFor(k));totalAll+=total;doneAll+=done;});
+  const pctAll=totalAll>0?Math.round(doneAll/totalAll*100):0;
+  const fill=document.getElementById('ov-total-fill');
+  const txt=document.getElementById('ov-total-text');
+  if(fill)fill.style.width=pctAll+'%';
+  if(txt)txt.textContent=`${doneAll} / ${totalAll} tasks · ${pctAll}%`;
+
+  // Overview grid
+  buildOvGrid();
+}
+
+function buildOvGrid(){
+  const grid=document.getElementById('ov-grid');if(!grid)return;
+  let html='';
+  OV_ITEMS.forEach(item=>{
+    let pct=0;
+    if(['sem2','summer','sem3','winter','sem4'].includes(item.id)){
+      const{pct:p}=countChecks(allItemsFor(item.id));pct=p;
+    } else if(item.id==='hackathon'){
+      const{pct:p}=countChecks(allItemsFor('hack'));pct=p;
+    }
+    const showBar=['sem2','summer','sem3','winter','sem4','hackathon'].includes(item.id);
+    html+=`<div class="ov-icon-card" onclick="showPage('${item.page}')">
+      <span class="ov-icon">${item.icon}</span>
+      <span class="ov-label">${item.label}</span>
+      ${showBar?`<div class="ov-mini-prog"><div class="ov-mini-fill" style="width:${pct}%;background:${item.color};"></div></div><span class="ov-pct">${pct}%</span>`:''}
+    </div>`;
+  });
+  grid.innerHTML=html;
+}
+
+// ═══════════════════════════════════════
+// RENDER ALL
+// ═══════════════════════════════════════
+function renderAll(){
+  buildChecklist(DATA.sem2.checklist,'sem2-cl-content');
+  buildChecklist(DATA.summer.checklist,'summer-cl-content');
+  buildChecklist(DATA.sem3.checklist,'sem3-cl-content');
+  buildChecklist(DATA.winter.checklist,'winter-cl-content');
+  buildChecklist(DATA.sem4.checklist,'sem4-cl-content');
+  buildSyllabus(DATA.sem2.syllabus,'sem2-syllabus');
+  buildSyllabus(DATA.sem3.syllabus,'sem3-syllabus');
+  buildSyllabus(DATA.sem4.syllabus,'sem4-syllabus');
+  buildTimeline(DATA.sem2.timeline,'sem2-timeline','#6c47ff');
+  buildTimeline(DATA.summer.timeline,'summer-timeline','#ff5c5c');
+  buildTimeline(DATA.sem3.timeline,'sem3-timeline','#00d4ff');
+  buildTimeline(DATA.winter.timeline,'winter-timeline','#ffc93c');
+  buildTimeline(DATA.sem4.timeline,'sem4-timeline','#2ecc71');
+  buildProjects();
+  buildHackathon();
+  buildSyllabus(FULL_SYLLABUS,'fullsyl-content');
+  renderBooks();
+  updateProgress();
+}
+
+loadLocal();
+renderAll();
+</script>
+</body>
+</html>
