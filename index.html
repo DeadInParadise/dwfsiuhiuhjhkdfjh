@@ -11,11 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <title>My IISc Roadmap</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<!-- Firebase compat -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-<!-- Firebase -->
+<!-- Firebase compat SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
@@ -42,6 +38,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .icon-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--sub);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;transition:all .2s;}
 .icon-btn:hover{border-color:var(--acc);color:var(--text);}
 #importFile{display:none;}
+
+/* ── SYNC DOT ── */
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block;margin-left:4px;transition:background .3s;}
+.sync-dot.online{background:var(--green);box-shadow:0 0 6px var(--green);}
+.sync-dot.syncing{background:var(--gold);animation:blink 1s infinite;}
+.sync-dot.error{background:var(--red);}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
 
 /* ── NAV ── */
 .nav-scroll{overflow-x:auto;display:flex;gap:6px;padding:10px 16px;background:var(--surf);border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch;scrollbar-width:none;}
@@ -169,21 +172,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .hack-week-card.open .hack-week-body{max-height:1000px;}
 .hack-week-inner{padding:13px 15px;}
 
-/* ── SYNC STATUS ── */
-.sync-status{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:background .3s;}
-.sync-dot.online{background:var(--green);box-shadow:0 0 6px var(--green);}
-.sync-dot.syncing{background:var(--gold);animation:pulse 1s infinite;}
-.sync-dot.error{background:var(--red);}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-
-/* ── UPLOAD PROGRESS ── */
-.upload-prog-wrap{margin-top:10px;display:none;}
-.upload-prog-wrap.show{display:block;}
-.upload-prog-bar{height:4px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px;}
-.upload-prog-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:2px;transition:width .2s;}
-.upload-prog-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
-
 /* ── BOOKS — FOLDER STYLE ── */
 .books-folders{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
 .book-folder{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
@@ -210,11 +198,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .book-del{background:none;border:none;color:var(--muted);font-size:15px;cursor:pointer;padding:4px;transition:color .2s;flex-shrink:0;}
 .book-del:hover{color:var(--red);}
 .book-empty-folder{text-align:center;padding:16px;color:var(--muted);font-size:12px;}
-/* Add book button at bottom */
 .add-book-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;background:var(--card);border:1px dashed var(--border2);border-radius:12px;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--muted);}
 .add-book-btn:hover{border-color:var(--acc);color:var(--acc);background:rgba(108,71,255,.06);}
 .add-book-btn .add-icon{font-size:22px;}
-/* Modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:flex-end;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal-box{background:var(--surf);border:1px solid var(--border);border-radius:16px 16px 0 0;padding:24px 20px;width:100%;max-width:480px;animation:slideUp .3s ease;}
@@ -224,11 +210,23 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .form-input{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;width:100%;transition:border-color .2s;margin-bottom:10px;display:block;}
 .form-input:focus{outline:none;border-color:var(--acc);}
 .form-input::placeholder{color:var(--muted);}
-.form-select{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;width:100%;margin-bottom:14px;display:block;}
+.form-select{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;width:100%;margin-bottom:12px;display:block;}
+.file-pick-label{display:flex;align-items:center;gap:12px;background:var(--card);border:2px dashed var(--border2);border-radius:8px;padding:13px 14px;cursor:pointer;margin-bottom:12px;transition:border-color .2s;}
+.file-pick-label:hover{border-color:var(--acc);}
+.file-pick-label .fp-icon{font-size:22px;flex-shrink:0;}
+.file-pick-label .fp-text{flex:1;}
+.file-pick-label .fp-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;}
+.file-pick-label .fp-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.upload-bar-wrap{margin-bottom:12px;display:none;}
+.upload-bar-wrap.show{display:block;}
+.upload-bar-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:4px;}
+.upload-bar{height:4px;background:var(--border2);border-radius:2px;overflow:hidden;}
+.upload-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:2px;transition:width .15s;}
 .modal-btns{display:flex;gap:8px;}
 .btn-cancel{flex:1;padding:12px;background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-family:'Syne',sans-serif;font-size:13px;cursor:pointer;}
 .btn-save{flex:2;padding:12px;background:var(--acc);border:none;border-radius:8px;color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s;}
 .btn-save:hover{opacity:.85;}
+.btn-save:disabled{opacity:.5;cursor:not-allowed;}
 
 /* ── OVERVIEW ICONS GRID ── */
 .ov-total-prog{margin-bottom:28px;}
@@ -253,14 +251,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 /* ── FULL SYLLABUS INTRO ── */
 .full-syl-intro{background:linear-gradient(135deg,rgba(108,71,255,.1),rgba(0,212,255,.06));border:1px solid var(--acc);border-radius:10px;padding:13px;margin-bottom:18px;font-size:13px;color:var(--sub);}
 .full-syl-intro strong{color:var(--acc2);display:block;margin-bottom:3px;font-family:'Syne',sans-serif;}
-
-/* ── SYNC STATUS ── */
-.sync-status{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:background .3s;flex-shrink:0;}
-.sync-dot.online{background:var(--green);box-shadow:0 0 6px var(--green);}
-.sync-dot.syncing{background:var(--gold);animation:blink 1s infinite;}
-.sync-dot.error{background:var(--red);}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
 </style>
 </head>
 <body>
@@ -270,10 +260,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 <div class="topbar">
   <div class="topbar-logo">IISc <span>Roadmap</span></div>
   <div class="topbar-actions">
-    <div class="sync-status" id="syncStatus">
-      <span class="sync-dot" id="syncDot"></span>
-      <span id="syncText">Connecting...</span>
-    </div>
+    <button class="icon-btn" onclick="exportData()">💾 Save</button>
+    <button class="icon-btn" onclick="document.getElementById('importFile').click()">📂 Load</button>
+    <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+    <span class="sync-dot" id="syncDot" title="Firebase sync"></span>
   </div>
 </div>
 
@@ -302,21 +292,21 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <option value="Quantum Computing">⚛️ Quantum Computing</option>
       <option value="Programming">🐍 Programming</option>
     </select>
-    <label style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px dashed var(--border2);border-radius:8px;padding:12px 14px;cursor:pointer;margin-bottom:10px;transition:border-color .2s;" id="filePickerLabel">
-      <span style="font-size:20px;">📎</span>
-      <div>
-        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);">Choose PDF or Image</div>
-        <div style="font-size:11px;color:var(--muted);" id="filePickerSub">Tap to browse files</div>
+    <label class="file-pick-label">
+      <span class="fp-icon">📎</span>
+      <div class="fp-text">
+        <div class="fp-title">Choose PDF or Image</div>
+        <div class="fp-sub" id="fpSub">Tap to pick a file from your phone</div>
       </div>
       <input type="file" id="bookFile" accept=".pdf,image/*" style="display:none" onchange="onFileChosen(event)">
     </label>
-    <div class="upload-prog-wrap" id="uploadProgWrap">
-      <div class="upload-prog-label">Uploading... <span id="uploadPct">0%</span></div>
-      <div class="upload-prog-bar"><div class="upload-prog-fill" id="uploadProgFill" style="width:0%"></div></div>
+    <div class="upload-bar-wrap" id="uploadWrap">
+      <div class="upload-bar-label">Uploading… <span id="uploadPct">0%</span></div>
+      <div class="upload-bar"><div class="upload-bar-fill" id="uploadFill"></div></div>
     </div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-save" id="btnAddBook" onclick="addBook()">Add Book</button>
+      <button class="btn-save" id="btnAdd" onclick="addBook()">Add Book</button>
     </div>
   </div>
 </div>
@@ -331,7 +321,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <h1>My IISc Roadmap</h1>
       <div class="sub">Tap any section to jump in</div>
     </div>
-    <!-- Total Progress Bar -->
     <div class="ov-total-prog prog-wrap">
       <div class="prog-meta">
         <span>Total Progress</span>
@@ -339,7 +328,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       </div>
       <div class="prog-bar"><div class="prog-fill" id="ov-total-fill" style="width:0%"></div></div>
     </div>
-    <!-- Icon Grid -->
     <div class="ov-grid" id="ov-grid"></div>
   </div>
 
@@ -443,6 +431,27 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 </div><!-- /app -->
 
 <script>
+// ═══════════════════════════════════════
+// FIREBASE INIT
+// ═══════════════════════════════════════
+const firebaseConfig={
+  apiKey:"AIzaSyBTgzLbJCaLoc0M7u0tYQzPoHVtmkO-lD0",
+  authDomain:"iisc-roadmap.firebaseapp.com",
+  projectId:"iisc-roadmap",
+  storageBucket:"iisc-roadmap.firebasestorage.app",
+  messagingSenderId:"246179548307",
+  appId:"1:246179548307:web:7aafbbee64790319ebd166"
+};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();
+const storage=firebase.storage();
+const DOC='user_data';
+
+function setSyncDot(status){
+  const d=document.getElementById('syncDot');
+  if(d)d.className='sync-dot '+status;
+}
+
 // ═══════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════
@@ -732,71 +741,64 @@ const PROJECTS=[
 ];
 
 // ═══════════════════════════════════════
-// FIREBASE INIT
-// ═══════════════════════════════════════
-const firebaseConfig={
-  apiKey:"AIzaSyBTgzLbJCaLoc0M7u0tYQzPoHVtmkO-lD0",
-  authDomain:"iisc-roadmap.firebaseapp.com",
-  projectId:"iisc-roadmap",
-  storageBucket:"iisc-roadmap.firebasestorage.app",
-  messagingSenderId:"246179548307",
-  appId:"1:246179548307:web:7aafbbee64790319ebd166"
-};
-firebase.initializeApp(firebaseConfig);
-const db=firebase.firestore();
-const storage=firebase.storage();
-const DOC_ID='user_data';
-
-// ═══════════════════════════════════════
-// SYNC STATUS
-// ═══════════════════════════════════════
-function setSyncStatus(status,text){
-  const dot=document.getElementById('syncDot');
-  const txt=document.getElementById('syncText');
-  if(dot)dot.className='sync-dot '+status;
-  if(txt)txt.textContent=text;
-}
-
-// ═══════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════
-let state={checks:{},books:[]};
+let state = { checks:{}, books:[] };
 
 // ═══════════════════════════════════════
-// FIREBASE SAVE (debounced)
+// FIREBASE SAVE/LOAD (debounced)
 // ═══════════════════════════════════════
 let saveTimer=null;
 function saveToFirebase(){
-  setSyncStatus('syncing','Saving...');
+  setSyncDot('syncing');
   clearTimeout(saveTimer);
   saveTimer=setTimeout(()=>{
-    db.collection('roadmap').doc(DOC_ID).set(state)
-      .then(()=>setSyncStatus('online','Saved ✓'))
-      .catch(e=>{setSyncStatus('error','Save failed');console.error(e);});
+    db.collection('roadmap').doc(DOC).set(state)
+      .then(()=>setSyncDot('online'))
+      .catch(e=>{setSyncDot('error');console.error(e);});
   },800);
 }
 
-// ═══════════════════════════════════════
-// FIREBASE LOAD
-// ═══════════════════════════════════════
 function loadFromFirebase(){
-  setSyncStatus('syncing','Loading...');
-  db.collection('roadmap').doc(DOC_ID).get()
+  setSyncDot('syncing');
+  db.collection('roadmap').doc(DOC).get()
     .then(doc=>{
       if(doc.exists){
-        state=doc.data();
-        if(!state.checks)state.checks={};
-        if(!state.books)state.books=[];
+        const d=doc.data();
+        state.checks=d.checks||{};
+        state.books=d.books||[];
       }
       renderAll();
-      setSyncStatus('online','Online ✓');
+      setSyncDot('online');
     })
     .catch(e=>{
-      console.error('Load error:',e);
-      setSyncStatus('error','Offline');
-      try{const d=localStorage.getItem('iisc_v3');if(d)state=JSON.parse(d);}catch(err){}
+      console.error(e);
+      setSyncDot('error');
+      // fallback localStorage
+      try{const d=localStorage.getItem('iisc_v3');if(d){const p=JSON.parse(d);state.checks=p.checks||{};state.books=p.books||[];}}catch(err){}
       renderAll();
     });
+}
+
+// Keep local export/import working
+function saveLocal(){try{localStorage.setItem('iisc_v3',JSON.stringify(state));}catch(e){}}
+function exportData(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='iisc_progress.json';a.click();
+}
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const p=JSON.parse(ev.target.result);
+      state.checks=p.checks||{};
+      state.books=p.books||[];
+      saveToFirebase();
+      renderAll();
+    }catch(err){alert('Invalid file');}
+  };
+  r.readAsText(file);
 }
 
 // ═══════════════════════════════════════
@@ -974,7 +976,7 @@ function buildHackathon(){
 }
 
 // ═══════════════════════════════════════
-// BOOKS — FIREBASE STORAGE
+// BOOKS — Firebase Storage upload
 // ═══════════════════════════════════════
 const BOOK_FOLDERS=[
   {name:'Mathematics',icon:'📐',color:'#00d4ff'},
@@ -987,18 +989,21 @@ let chosenFile=null;
 
 function onFileChosen(e){
   chosenFile=e.target.files[0];
-  const sub=document.getElementById('filePickerSub');
+  const sub=document.getElementById('fpSub');
   if(chosenFile&&sub)sub.textContent=chosenFile.name;
 }
 
 function openModal(){
-  document.getElementById('bookModal').classList.add('open');
   chosenFile=null;
-  const sub=document.getElementById('filePickerSub');
-  if(sub)sub.textContent='Tap to browse files';
   document.getElementById('bookName').value='';
-  const fi=document.getElementById('bookFile');
-  if(fi)fi.value='';
+  document.getElementById('bookFile').value='';
+  const sub=document.getElementById('fpSub');
+  if(sub)sub.textContent='Tap to pick a file from your phone';
+  document.getElementById('uploadWrap').classList.remove('show');
+  document.getElementById('uploadFill').style.width='0%';
+  const btn=document.getElementById('btnAdd');
+  btn.disabled=false;btn.textContent='Add Book';
+  document.getElementById('bookModal').classList.add('open');
 }
 function closeModal(){document.getElementById('bookModal').classList.remove('open');}
 function closeModalOutside(e){if(e.target===document.getElementById('bookModal'))closeModal();}
@@ -1009,36 +1014,29 @@ function addBook(){
   if(!name){alert('Please enter a book title');return;}
   if(!chosenFile){alert('Please choose a PDF or image file');return;}
 
-  const btn=document.getElementById('btnAddBook');
-  btn.disabled=true;btn.textContent='Uploading...';
-  const progWrap=document.getElementById('uploadProgWrap');
-  const progFill=document.getElementById('uploadProgFill');
-  const progPct=document.getElementById('uploadPct');
-  progWrap.classList.add('show');
+  const btn=document.getElementById('btnAdd');
+  btn.disabled=true;btn.textContent='Uploading…';
+  document.getElementById('uploadWrap').classList.add('show');
 
-  const filePath=`books/${folder}/${Date.now()}_${chosenFile.name}`;
-  const ref=storage.ref(filePath);
-  const task=ref.put(chosenFile);
+  const path=`books/${folder}/${Date.now()}_${chosenFile.name}`;
+  const task=storage.ref(path).put(chosenFile);
 
   task.on('state_changed',
     snap=>{
       const pct=Math.round(snap.bytesTransferred/snap.totalBytes*100);
-      progFill.style.width=pct+'%';
-      progPct.textContent=pct+'%';
+      document.getElementById('uploadFill').style.width=pct+'%';
+      document.getElementById('uploadPct').textContent=pct+'%';
     },
     err=>{
       alert('Upload failed: '+err.message);
       btn.disabled=false;btn.textContent='Add Book';
-      progWrap.classList.remove('show');
+      document.getElementById('uploadWrap').classList.remove('show');
     },
     ()=>{
       task.snapshot.ref.getDownloadURL().then(url=>{
         state.books.push({id:Date.now(),name,folder,url,fileName:chosenFile.name});
         saveToFirebase();
         renderBooks();
-        btn.disabled=false;btn.textContent='Add Book';
-        progWrap.classList.remove('show');
-        progFill.style.width='0%';
         closeModal();
       });
     }
@@ -1047,11 +1045,8 @@ function addBook(){
 
 function deleteBook(id){
   const book=state.books.find(b=>b.id===id);
-  if(!book)return;
-  if(!confirm(`Delete "${book.name}"?`))return;
-  if(book.url){
-    try{storage.refFromURL(book.url).delete().catch(()=>{});}catch(e){}
-  }
+  if(!book||!confirm('Delete "'+book.name+'"?'))return;
+  if(book.url){try{storage.refFromURL(book.url).delete().catch(()=>{});}catch(e){}}
   state.books=state.books.filter(b=>b.id!==id);
   saveToFirebase();
   renderBooks();
@@ -1113,7 +1108,6 @@ function countChecks(items){
 }
 
 function updateProgress(){
-  // Per-sem bars
   ['sem2','summer','sem3','winter','sem4'].forEach(k=>{
     const{done,total,pct}=countChecks(allItemsFor(k));
     const bar=document.getElementById('prog-'+k);
@@ -1121,14 +1115,11 @@ function updateProgress(){
     if(bar)bar.style.width=pct+'%';
     if(txt)txt.textContent=`${done}/${total} · ${pct}%`;
   });
-  // Hackathon
   const hc=countChecks(allItemsFor('hack'));
   const hbar=document.getElementById('prog-hack');
   const htxt=document.getElementById('prog-hack-text');
   if(hbar)hbar.style.width=hc.pct+'%';
   if(htxt)htxt.textContent=`${hc.done}/${hc.total} · ${hc.pct}%`;
-
-  // Overview total
   const checkableKeys=['sem2','summer','sem3','winter','sem4','hack'];
   let totalAll=0,doneAll=0;
   checkableKeys.forEach(k=>{const{done,total}=countChecks(allItemsFor(k));totalAll+=total;doneAll+=done;});
@@ -1137,8 +1128,6 @@ function updateProgress(){
   const txt=document.getElementById('ov-total-text');
   if(fill)fill.style.width=pctAll+'%';
   if(txt)txt.textContent=`${doneAll} / ${totalAll} tasks · ${pctAll}%`;
-
-  // Overview grid
   buildOvGrid();
 }
 
@@ -1186,9 +1175,11 @@ function renderAll(){
   updateProgress();
 }
 
+// ═══════════════════════════════════════
+// START
+// ═══════════════════════════════════════
 loadFromFirebase();
 </script>
-
 <script>
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('sw.js');
