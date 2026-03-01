@@ -11,6 +11,14 @@
 <link rel="manifest" href="manifest.json">
 <title>My IISc Roadmap</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Firebase compat -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <style>
 :root{
   --bg:#08090f;--surf:#0e0f1a;--card:#13141f;--card2:#191a28;
@@ -161,6 +169,21 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .hack-week-card.open .hack-week-body{max-height:1000px;}
 .hack-week-inner{padding:13px 15px;}
 
+/* ── SYNC STATUS ── */
+.sync-status{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:background .3s;}
+.sync-dot.online{background:var(--green);box-shadow:0 0 6px var(--green);}
+.sync-dot.syncing{background:var(--gold);animation:pulse 1s infinite;}
+.sync-dot.error{background:var(--red);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+/* ── UPLOAD PROGRESS ── */
+.upload-prog-wrap{margin-top:10px;display:none;}
+.upload-prog-wrap.show{display:block;}
+.upload-prog-bar{height:4px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px;}
+.upload-prog-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:2px;transition:width .2s;}
+.upload-prog-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
+
 /* ── BOOKS — FOLDER STYLE ── */
 .books-folders{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
 .book-folder{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
@@ -230,6 +253,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 /* ── FULL SYLLABUS INTRO ── */
 .full-syl-intro{background:linear-gradient(135deg,rgba(108,71,255,.1),rgba(0,212,255,.06));border:1px solid var(--acc);border-radius:10px;padding:13px;margin-bottom:18px;font-size:13px;color:var(--sub);}
 .full-syl-intro strong{color:var(--acc2);display:block;margin-bottom:3px;font-family:'Syne',sans-serif;}
+
+/* ── SYNC STATUS ── */
+.sync-status{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:background .3s;flex-shrink:0;}
+.sync-dot.online{background:var(--green);box-shadow:0 0 6px var(--green);}
+.sync-dot.syncing{background:var(--gold);animation:blink 1s infinite;}
+.sync-dot.error{background:var(--red);}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
 </style>
 </head>
 <body>
@@ -239,9 +270,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 <div class="topbar">
   <div class="topbar-logo">IISc <span>Roadmap</span></div>
   <div class="topbar-actions">
-    <button class="icon-btn" onclick="exportData()">💾 Save</button>
-    <button class="icon-btn" onclick="document.getElementById('importFile').click()">📂 Load</button>
-    <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+    <div class="sync-status" id="syncStatus">
+      <span class="sync-dot" id="syncDot"></span>
+      <span id="syncText">Connecting...</span>
+    </div>
   </div>
 </div>
 
@@ -264,16 +296,27 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="modal-box">
     <div class="modal-title">📖 Add a <span>Book</span></div>
     <input class="form-input" id="bookName" placeholder="Book title (e.g. Nielsen & Chuang)" />
-    <input class="form-input" id="bookUrl" placeholder="Link (PDF / website / Drive)" />
     <select class="form-select" id="bookFolder">
       <option value="Mathematics">📐 Mathematics</option>
       <option value="Machine Learning">🤖 Machine Learning</option>
       <option value="Quantum Computing">⚛️ Quantum Computing</option>
       <option value="Programming">🐍 Programming</option>
     </select>
+    <label style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px dashed var(--border2);border-radius:8px;padding:12px 14px;cursor:pointer;margin-bottom:10px;transition:border-color .2s;" id="filePickerLabel">
+      <span style="font-size:20px;">📎</span>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);">Choose PDF or Image</div>
+        <div style="font-size:11px;color:var(--muted);" id="filePickerSub">Tap to browse files</div>
+      </div>
+      <input type="file" id="bookFile" accept=".pdf,image/*" style="display:none" onchange="onFileChosen(event)">
+    </label>
+    <div class="upload-prog-wrap" id="uploadProgWrap">
+      <div class="upload-prog-label">Uploading... <span id="uploadPct">0%</span></div>
+      <div class="upload-prog-bar"><div class="upload-prog-fill" id="uploadProgFill" style="width:0%"></div></div>
+    </div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-save" onclick="addBook()">Add Book</button>
+      <button class="btn-save" id="btnAddBook" onclick="addBook()">Add Book</button>
     </div>
   </div>
 </div>
@@ -689,25 +732,71 @@ const PROJECTS=[
 ];
 
 // ═══════════════════════════════════════
+// FIREBASE INIT
+// ═══════════════════════════════════════
+const firebaseConfig={
+  apiKey:"AIzaSyBTgzLbJCaLoc0M7u0tYQzPoHVtmkO-lD0",
+  authDomain:"iisc-roadmap.firebaseapp.com",
+  projectId:"iisc-roadmap",
+  storageBucket:"iisc-roadmap.firebasestorage.app",
+  messagingSenderId:"246179548307",
+  appId:"1:246179548307:web:7aafbbee64790319ebd166"
+};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();
+const storage=firebase.storage();
+const DOC_ID='user_data';
+
+// ═══════════════════════════════════════
+// SYNC STATUS
+// ═══════════════════════════════════════
+function setSyncStatus(status,text){
+  const dot=document.getElementById('syncDot');
+  const txt=document.getElementById('syncText');
+  if(dot)dot.className='sync-dot '+status;
+  if(txt)txt.textContent=text;
+}
+
+// ═══════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════
-let state = { checks:{}, books:[] };
-
-function saveLocal(){try{localStorage.setItem('iisc_v3',JSON.stringify(state));}catch(e){}}
-function loadLocal(){try{const d=localStorage.getItem('iisc_v3');if(d)state=JSON.parse(d);}catch(e){}}
+let state={checks:{},books:[]};
 
 // ═══════════════════════════════════════
-// EXPORT / IMPORT
+// FIREBASE SAVE (debounced)
 // ═══════════════════════════════════════
-function exportData(){
-  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='iisc_progress.json';a.click();
+let saveTimer=null;
+function saveToFirebase(){
+  setSyncStatus('syncing','Saving...');
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    db.collection('roadmap').doc(DOC_ID).set(state)
+      .then(()=>setSyncStatus('online','Saved ✓'))
+      .catch(e=>{setSyncStatus('error','Save failed');console.error(e);});
+  },800);
 }
-function importData(e){
-  const file=e.target.files[0];if(!file)return;
-  const r=new FileReader();
-  r.onload=ev=>{try{state=JSON.parse(ev.target.result);saveLocal();renderAll();}catch(err){alert('Invalid file');}};
-  r.readAsText(file);
+
+// ═══════════════════════════════════════
+// FIREBASE LOAD
+// ═══════════════════════════════════════
+function loadFromFirebase(){
+  setSyncStatus('syncing','Loading...');
+  db.collection('roadmap').doc(DOC_ID).get()
+    .then(doc=>{
+      if(doc.exists){
+        state=doc.data();
+        if(!state.checks)state.checks={};
+        if(!state.books)state.books=[];
+      }
+      renderAll();
+      setSyncStatus('online','Online ✓');
+    })
+    .catch(e=>{
+      console.error('Load error:',e);
+      setSyncStatus('error','Offline');
+      try{const d=localStorage.getItem('iisc_v3');if(d)state=JSON.parse(d);}catch(err){}
+      renderAll();
+    });
 }
 
 // ═══════════════════════════════════════
@@ -746,10 +835,10 @@ function switchTab(sem,tab){
 // ═══════════════════════════════════════
 function toggle(id){
   state.checks[id]=!state.checks[id];
-  saveLocal();
   const el=document.getElementById('ci_'+id);
   if(el)el.classList.toggle('done',!!state.checks[id]);
   updateProgress();
+  saveToFirebase();
 }
 
 function buildChecklist(sections,containerId){
@@ -885,7 +974,7 @@ function buildHackathon(){
 }
 
 // ═══════════════════════════════════════
-// BOOKS
+// BOOKS — FIREBASE STORAGE
 // ═══════════════════════════════════════
 const BOOK_FOLDERS=[
   {name:'Mathematics',icon:'📐',color:'#00d4ff'},
@@ -894,26 +983,77 @@ const BOOK_FOLDERS=[
   {name:'Programming',icon:'🐍',color:'#2ecc71'},
 ];
 
-function openModal(){document.getElementById('bookModal').classList.add('open');}
+let chosenFile=null;
+
+function onFileChosen(e){
+  chosenFile=e.target.files[0];
+  const sub=document.getElementById('filePickerSub');
+  if(chosenFile&&sub)sub.textContent=chosenFile.name;
+}
+
+function openModal(){
+  document.getElementById('bookModal').classList.add('open');
+  chosenFile=null;
+  const sub=document.getElementById('filePickerSub');
+  if(sub)sub.textContent='Tap to browse files';
+  document.getElementById('bookName').value='';
+  const fi=document.getElementById('bookFile');
+  if(fi)fi.value='';
+}
 function closeModal(){document.getElementById('bookModal').classList.remove('open');}
 function closeModalOutside(e){if(e.target===document.getElementById('bookModal'))closeModal();}
 
 function addBook(){
   const name=document.getElementById('bookName').value.trim();
-  const url=document.getElementById('bookUrl').value.trim();
   const folder=document.getElementById('bookFolder').value;
-  if(!name||!url){alert('Please enter both title and link');return;}
-  state.books.push({id:Date.now(),name,url,folder});
-  saveLocal();
-  document.getElementById('bookName').value='';
-  document.getElementById('bookUrl').value='';
-  closeModal();
-  renderBooks();
+  if(!name){alert('Please enter a book title');return;}
+  if(!chosenFile){alert('Please choose a PDF or image file');return;}
+
+  const btn=document.getElementById('btnAddBook');
+  btn.disabled=true;btn.textContent='Uploading...';
+  const progWrap=document.getElementById('uploadProgWrap');
+  const progFill=document.getElementById('uploadProgFill');
+  const progPct=document.getElementById('uploadPct');
+  progWrap.classList.add('show');
+
+  const filePath=`books/${folder}/${Date.now()}_${chosenFile.name}`;
+  const ref=storage.ref(filePath);
+  const task=ref.put(chosenFile);
+
+  task.on('state_changed',
+    snap=>{
+      const pct=Math.round(snap.bytesTransferred/snap.totalBytes*100);
+      progFill.style.width=pct+'%';
+      progPct.textContent=pct+'%';
+    },
+    err=>{
+      alert('Upload failed: '+err.message);
+      btn.disabled=false;btn.textContent='Add Book';
+      progWrap.classList.remove('show');
+    },
+    ()=>{
+      task.snapshot.ref.getDownloadURL().then(url=>{
+        state.books.push({id:Date.now(),name,folder,url,fileName:chosenFile.name});
+        saveToFirebase();
+        renderBooks();
+        btn.disabled=false;btn.textContent='Add Book';
+        progWrap.classList.remove('show');
+        progFill.style.width='0%';
+        closeModal();
+      });
+    }
+  );
 }
 
 function deleteBook(id){
+  const book=state.books.find(b=>b.id===id);
+  if(!book)return;
+  if(!confirm(`Delete "${book.name}"?`))return;
+  if(book.url){
+    try{storage.refFromURL(book.url).delete().catch(()=>{});}catch(e){}
+  }
   state.books=state.books.filter(b=>b.id!==id);
-  saveLocal();
+  saveToFirebase();
   renderBooks();
 }
 
@@ -935,10 +1075,10 @@ function renderBooks(){
       <div class="book-folder-body"><div class="book-folder-inner">
         ${books.length===0?'<div class="book-empty-folder">No books yet — tap "Add a New Book" below</div>':
           books.map(b=>`<div class="book-row">
-            <button class="book-open-btn" onclick="window.open('${b.url}','_blank')" title="Open book">📖</button>
+            <button class="book-open-btn" onclick="window.open('${b.url}','_blank')" title="Open">📖</button>
             <div class="book-row-info">
               <div class="book-row-name">${b.name}</div>
-              <div class="book-row-folder">${folder.name}</div>
+              <div class="book-row-folder">${b.fileName||folder.name}</div>
             </div>
             <button class="book-del" onclick="deleteBook(${b.id})" title="Remove">🗑</button>
           </div>`).join('')}
@@ -1046,11 +1186,11 @@ function renderAll(){
   updateProgress();
 }
 
-loadLocal();
-renderAll();
+loadFromFirebase();
 </script>
+
 <script>
-  if('serviceWorker' in navigator) {
+  if('serviceWorker' in navigator){
     navigator.serviceWorker.register('sw.js');
   }
 </script>
