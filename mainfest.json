@@ -1,14 +1,19 @@
 {
-  "name": "QML Progress Tracker",
-  "short_name": "QML Tracker",
-  "start_url": "/dwfsiuhiuhjhkdfjh/",
+  "name": "IISc QML Roadmap",
+  "short_name": "QML Roadmap",
+  "start_url": "https://yourusername.github.io/reponame/index.html",
   "display": "standalone",
-  "background_color": "#121212",
+  "background_color": "#08090f",
   "theme_color": "#121212",
   "icons": [
     {
-      "src": "/dwfsiuhiuhjhkdfjh/icon.png",
+      "src": "https://yourusername.github.io/reponame/icon.png",
       "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "https://yourusername.github.io/reponame/icon.png",
+      "sizes": "192x192",
       "type": "image/png"
     }
   ]
