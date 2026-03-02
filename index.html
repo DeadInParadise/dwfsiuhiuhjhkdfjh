@@ -172,6 +172,62 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .hack-week-card.open .hack-week-body{max-height:1000px;}
 .hack-week-inner{padding:13px 15px;}
 
+/* ── BOOKS — FOLDER STYLE ── */
+.books-folders{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.book-folder{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.book-folder-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .2s;user-select:none;}
+.book-folder-head:hover{background:var(--card2);}
+.book-folder.open .book-folder-head{background:rgba(108,71,255,.07);border-bottom:1px solid var(--border);}
+.book-folder-icon{font-size:22px;flex-shrink:0;}
+.book-folder-info{flex:1;}
+.book-folder-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
+.book-folder-count{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:1px;}
+.book-folder-arrow{color:var(--muted);font-size:11px;transition:transform .3s;flex-shrink:0;}
+.book-folder.open .book-folder-arrow{transform:rotate(180deg);}
+.book-folder-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1);}
+.book-folder.open .book-folder-body{max-height:1000px;}
+.book-folder-inner{padding:10px 12px 14px;}
+.book-row{display:flex;align-items:center;gap:10px;padding:10px 10px;background:var(--card2);border:1px solid var(--border);border-radius:8px;margin-bottom:7px;transition:border-color .2s;}
+.book-row:hover{border-color:var(--border2);}
+.book-row:last-child{margin-bottom:0;}
+.book-open-btn{background:none;border:1px solid rgba(0,212,255,.3);border-radius:7px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--acc2);font-size:18px;cursor:pointer;flex-shrink:0;transition:all .2s;}
+.book-open-btn:hover{background:rgba(0,212,255,.1);border-color:var(--acc2);}
+.book-row-info{flex:1;min-width:0;}
+.book-row-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.book-row-folder{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-top:1px;}
+.book-del{background:none;border:none;color:var(--muted);font-size:15px;cursor:pointer;padding:4px;transition:color .2s;flex-shrink:0;}
+.book-del:hover{color:var(--red);}
+.book-empty-folder{text-align:center;padding:16px;color:var(--muted);font-size:12px;}
+.add-book-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;background:var(--card);border:1px dashed var(--border2);border-radius:12px;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--muted);}
+.add-book-btn:hover{border-color:var(--acc);color:var(--acc);background:rgba(108,71,255,.06);}
+.add-book-btn .add-icon{font-size:22px;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--surf);border:1px solid var(--border);border-radius:16px 16px 0 0;padding:24px 20px;width:100%;max-width:480px;animation:slideUp .3s ease;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.modal-title span{color:var(--acc2);}
+.form-input{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;width:100%;transition:border-color .2s;margin-bottom:10px;display:block;}
+.form-input:focus{outline:none;border-color:var(--acc);}
+.form-input::placeholder{color:var(--muted);}
+.form-select{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;width:100%;margin-bottom:12px;display:block;}
+.file-pick-label{display:flex;align-items:center;gap:12px;background:var(--card);border:2px dashed var(--border2);border-radius:8px;padding:13px 14px;cursor:pointer;margin-bottom:12px;transition:border-color .2s;}
+.file-pick-label:hover{border-color:var(--acc);}
+.file-pick-label .fp-icon{font-size:22px;flex-shrink:0;}
+.file-pick-label .fp-text{flex:1;}
+.file-pick-label .fp-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;}
+.file-pick-label .fp-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.upload-bar-wrap{margin-bottom:12px;display:none;}
+.upload-bar-wrap.show{display:block;}
+.upload-bar-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:4px;}
+.upload-bar{height:4px;background:var(--border2);border-radius:2px;overflow:hidden;}
+.upload-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:2px;transition:width .15s;}
+.modal-btns{display:flex;gap:8px;}
+.btn-cancel{flex:1;padding:12px;background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-family:'Syne',sans-serif;font-size:13px;cursor:pointer;}
+.btn-save{flex:2;padding:12px;background:var(--acc);border:none;border-radius:8px;color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s;}
+.btn-save:hover{opacity:.85;}
+.btn-save:disabled{opacity:.5;cursor:not-allowed;}
+
 /* ── OVERVIEW ICONS GRID ── */
 .ov-total-prog{margin-bottom:28px;}
 .ov-total-prog .prog-meta{font-size:12px;}
@@ -204,6 +260,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 <div class="topbar">
   <div class="topbar-logo">IISc <span>Roadmap</span></div>
   <div class="topbar-actions">
+    <button class="icon-btn" onclick="exportData()">💾 Save</button>
+    <button class="icon-btn" onclick="document.getElementById('importFile').click()">📂 Load</button>
+    <input type="file" id="importFile" accept=".json" onchange="importData(event)">
     <span class="sync-dot" id="syncDot" title="Firebase sync"></span>
   </div>
 </div>
@@ -219,32 +278,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <button class="nav-pill" onclick="showPage('projects')" id="pill-projects">Projects</button>
   <button class="nav-pill special" onclick="showPage('hackathon')" id="pill-hackathon">Hackathon</button>
   <button class="nav-pill special" onclick="showPage('fullsyl')" id="pill-fullsyl">Full Syllabus</button>
-</div>
-
-    <input class="form-input" id="bookName" placeholder="Book title (e.g. Nielsen & Chuang)" />
-    <select class="form-select" id="bookFolder">
-      <option value="Mathematics">📐 Mathematics</option>
-      <option value="Machine Learning">🤖 Machine Learning</option>
-      <option value="Quantum Computing">⚛️ Quantum Computing</option>
-      <option value="Programming">🐍 Programming</option>
-    </select>
-    <label class="file-pick-label">
-      <span class="fp-icon">📎</span>
-      <div class="fp-text">
-        <div class="fp-title">Choose PDF or Image</div>
-        <div class="fp-sub" id="fpSub">Tap to pick a file from your phone</div>
-      </div>
-      <input type="file" id="bookFile" accept=".pdf,image/*" style="display:none" onchange="onFileChosen(event)">
-    </label>
-    <div class="upload-bar-wrap" id="uploadWrap">
-      <div class="upload-bar-label">Uploading… <span id="uploadPct">0%</span></div>
-      <div class="upload-bar"><div class="upload-bar-fill" id="uploadFill"></div></div>
-    </div>
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-save" id="btnAdd" onclick="addBook()">Add Book</button>
-    </div>
-  </div>
 </div>
 
 <!-- MAIN -->
@@ -704,6 +737,27 @@ function loadFromFirebase(){
       try{const d=localStorage.getItem('iisc_v3');if(d){const p=JSON.parse(d);state.checks=p.checks||{};state.books=p.books||[];}}catch(err){}
       renderAll();
     });
+}
+
+// Keep local export/import working
+function saveLocal(){try{localStorage.setItem('iisc_v3',JSON.stringify(state));}catch(e){}}
+function exportData(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='iisc_progress.json';a.click();
+}
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const p=JSON.parse(ev.target.result);
+      state.checks=p.checks||{};
+      state.books=p.books||[];
+      saveToFirebase();
+      renderAll();
+    }catch(err){alert('Invalid file');}
+  };
+  r.readAsText(file);
 }
 
 // ═══════════════════════════════════════
